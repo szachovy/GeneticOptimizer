@@ -1,16 +1,35 @@
 #!/usr/bin/env python3 
 from configparser import ConfigParser
+from abc import ABCMeta, abstractmethod
 
-config = ConfigParser()
-config.read('DEFAULTS.ini')
-#class Load_Configuration(type):
+#config = ConfigParser()
+#config.read('DEFAULTS.ini')
+
+class Load_Configuration(type):
     
-#    def __new__(cls, *args, **kwargs):
-#        config = ConfigParser()
-#        config.read("DEFAULTS.ini")
-#        return super(Load_Configuration, cls).__new__(cls, config)
+    def __new__(cls, *args, **kwargs):
+        config = ConfigParser()
+        config.read("DEFAULTS.ini")
+        return super(Load_Configuration, cls).__new__(cls, config)
 
-# ABSTRACT CLASS    
+
+class Representation_Types(metaclass=ABCMeta):
+    '''
+       ds 
+    '''
+    @abstractmethod
+    def binary_representation(self):
+        raise NotImplementedError("Generator do not contain Binary Representation population generator")
+
+    @abstractmethod
+    def integer_representation(self):
+        raise NotImplementedError("Generator do not contain Integer Representation population generator")
+
+    @abstractmethod
+    def permutation_representation(self):
+        raise NotImplementedError("Generator do not contain Permutation Representation population generator")
+
+
 class Population_Generator(object):
     '''
         dsa   

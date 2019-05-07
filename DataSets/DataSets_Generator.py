@@ -1,16 +1,20 @@
 #!/usr/bin/env python3 
 from configparser import ConfigParser
 from abc import ABCMeta, abstractmethod
+import numpy as np
 
-#config = ConfigParser()
-#config.read('DEFAULTS.ini')
 
-class Load_Configuration(type):
-    
-    def __new__(cls, *args, **kwargs):
-        config = ConfigParser()
-        config.read("DEFAULTS.ini")
-        return super(Load_Configuration, cls).__new__(cls, config)
+class Load_Configuration(object):
+    '''
+        This is auxiliary class for configuration purposes,
+        used from DEFAULTS.ini file placed in this directory
+    '''
+    def __init__(self):
+        self.config = ConfigParser()
+        self.config.read('DEFAULTS.ini')
+            
+    def read(self, argument):
+        return self.config['GENERATOR'][argument]
 
 
 class Representation_Types(metaclass=ABCMeta):
@@ -30,11 +34,14 @@ class Representation_Types(metaclass=ABCMeta):
         raise NotImplementedError("Generator do not contain Permutation Representation population generator")
 
 
-class Population_Generator(object):
+class Population_Generator(Representation_Types):
     '''
         dsa   
-    '''        
-    def __init__(self, population_size=config['GENERATOR']['POPULATION_SIZE'], chromosome_size=config['GENERATOR']['CHROMOSOME_SIZE'], equal_chromosomes=config['GENERATOR']['EQUAL_CHROMOSOMES'], initialization_method=config['GENERATOR']['INITIALIZATION_METHOD'], representation=config['GENERATOR']['REPRESENTATION'], saving_method=config['GENERATOR']['SAVING_METHOD']):
+    '''       
+    config = Load_Configuration()
+    
+    def __init__(self, population_size=config.read('POPULATION_SIZE'), chromosome_size=config.read('CHROMOSOME_SIZE'), equal_chromosomes=config.read('EQUAL_CHROMOSOMES'), initialization_method=config.read('INITIALIZATION_METHOD'), representation = config.read('REPRESENTATION'), saving_method = config.read('SAVING_METHOD')):
+
         self.population_size = population_size
         self.chromosome_size = chromosome_size
         self.equal_chromosomes = equal_chromosomes
@@ -44,6 +51,7 @@ class Population_Generator(object):
         
 
     def binary_representation(self):
+        
         pass
 
     def integer_representation(self):

@@ -47,29 +47,26 @@ class Configuration_Executer(object):
     config = Load_Configuration()
 
     def __init__(self, population_size=config.read('POPULATION_SIZE'), chromosome_size=config.read('CHROMOSOME_SIZE'), equal_chromosomes=config.read('EQUAL_CHROMOSOMES'), initialization_method=config.read('INITIALIZATION_METHOD'), representation = config.read('REPRESENTATION'), saving_method = config.read('SAVING_METHOD')):
-    
-        self.population_size = population_size
-        self.chromosome_size = chromosome_size
-        self.equal_chromosomes = equal_chromosomes
+        
+        try:
+            self.population_size = int(population_size)
+        except ValueError as v:
+            print("Wrong type of population_size input, make sure that you placed integer value")
+            
+        try:
+            self.chromosome_size = int(chromosome_size)
+        except ValueError as v:
+            print("Wrong type of chromosome_size input, make sure that you placed integer value")    
+            
+        try:
+            self.equal_chromosomes = bool(equal_chromosomes)
+        except ValueError as v:
+            print("Wrong type of equal_chromosomes input, make sure that you placed 0 or 1")
+                
         self.initialization_method = initialization_method
         self.representation = representation
         self.saving_method = saving_method
             
-    def type_converter(self):
-        try:
-            map(int, self.population_size)
-        except ValueError as v:
-            print("Wrong type of population_size input, make sure that you placed integer value")
-    
-        try:
-            map(int, self.chromosome_size)
-        except ValueError as v:
-            print("Wrong type of chromosome_size input, make sure that you placed integer value")    
-    
-        try:
-            map(bool, self.equal_chromosomes)
-        except ValueError as v:
-            print("Wrong type of equal_chromosomes input, make sure that you placed 0 or 1")
             
     def a(self):
         return self.population_size
@@ -85,7 +82,7 @@ class Population_Generator(Representation_Types, Configuration_Executer):
     
     def __init__(self):
         super().__init__()
-
+    
         if self.representation == 'Binary':
             self.binary_representation()
         elif self.representation == 'Real_Valued':
@@ -99,7 +96,8 @@ class Population_Generator(Representation_Types, Configuration_Executer):
             
 
     def binary_representation(self):
-        print('tu cie mam')        
+        print(self.population_size)
+        print(type(self.population_size))
 #        np.random.randint(2, size=())
 
     def integer_representation(self):
@@ -116,8 +114,3 @@ class Population_Generator(Representation_Types, Configuration_Executer):
 #print(Configuration_Executer().a())
 
 gen = Population_Generator()
-print(gen.population_size)
-print(gen.initialization_method)
-
-print(type(gen.population_size))
-print(type(gen.initialization_method))

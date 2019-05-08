@@ -3,7 +3,7 @@
 from configparser import ConfigParser
 from abc import ABCMeta, abstractmethod
 import numpy as np
-
+import pandas as pd
 
 class Load_Configuration(object):
     '''
@@ -24,20 +24,8 @@ class Representation_Types(metaclass=ABCMeta):
         Population_Generator class.
     '''
     @abstractmethod
-    def binary_representation(self):
-        raise NotImplementedError("Generator do not handle Binary Representation population generator")
-
-    @abstractmethod
-    def integer_representation(self):
-        raise NotImplementedError("Generator do not handle Integer Representation population generator")
-
-    @abstractmethod
-    def real_valued_representation(self):
-        raise NotImplementedError("Generator do not handle Real Valued Representation population generator")    
-
-    @abstractmethod
-    def permutation_representation(self):
-        raise NotImplementedError("Generator do not handle Permutation Representation population generator")
+    def generate(self):
+        raise NotImplementedError("Generator temporarily do not handle population generate requests")
 
 class Configuration_Executer(object):
     '''
@@ -51,26 +39,62 @@ class Configuration_Executer(object):
         try:
             self.population_size = int(population_size)
         except ValueError as v:
-            print("Wrong type of population_size input, make sure that you placed integer value")
+            print("Wrong type of population_size input, check DEFAULTS for more info")
             
         try:
             self.chromosome_size = int(chromosome_size)
         except ValueError as v:
-            print("Wrong type of chromosome_size input, make sure that you placed integer value")    
+            print("Wrong type of chromosome_size input, check DEFAULTS for more info")    
             
         try:
             self.equal_chromosomes = bool(equal_chromosomes)
         except ValueError as v:
-            print("Wrong type of equal_chromosomes input, make sure that you placed 0 or 1")
+            print("Wrong type of equal_chromosomes input, check DEFAULTS for more info")
                 
         self.initialization_method = initialization_method
         self.representation = representation
         self.saving_method = saving_method
-            
-            
-    def a(self):
-        return self.population_size
 
+    def random_initialization(self):
+        population = pd.DataFrame()
+        print('tera tu')
+        if self.representation == 'Binary':
+            population = pd.DataFrame(data=np.random.randint(2, size=(self.population_size, self.chromosome_size)))
+
+        elif self.representation == 'Real_Valued':
+            self.real_valued_representation()
+        elif self.representation == 'Integer':
+            self.integer_representation()
+        elif self.representation == 'Permutation':
+            self.permutation_representation()
+        else:
+            raise Exception('Wrong value in representation input, check DEFAULTS for more info')
+
+        if not self.equal_chromosomes:
+            self.generator.fill_unequal_chromosomes()        
+
+        return population
+
+    def heuristic_initialization(self):
+        if not self.equal_chromosomes:
+            self.generator.fill_unequal_chromosomes()        
+        return
+
+    def fill_unequal_chromosomes(self):
+        pass
+
+    @staticmethod
+    def save_csv(population):
+        population.to_csv("../DataSets/tmp.csv")
+    
+    @staticmethod
+    def save_xlsx(population):
+        pass
+    
+    @staticmethod
+    def save_json(population):
+        pass
+                
 
                 
 class Population_Generator(Representation_Types, Configuration_Executer):
@@ -82,32 +106,46 @@ class Population_Generator(Representation_Types, Configuration_Executer):
     
     def __init__(self):
         super().__init__()
+        self.generate()        
     
-        if self.representation == 'Binary':
-            self.binary_representation()
-        elif self.representation == 'Real_Valued':
-            self.real_valued_representation()
-        elif self.representation == 'Integer':
-            self.integer_representation()
-        elif self.representation == 'Permutation':
-            self.permutation_representation()
+
+    def initialize_population(self):
+        if self.initialization_method == 'Random':
+            print('i jest random')
+            return self.generator.random_initialization()
+        
+        elif self.initialization_method == 'Heuristic':
+            print('i jest heuristic')
+            self.generator.heuristic_initialization()
+                
         else:
-            raise Exception('Wrong value in representation input, make sure that you placed one of the following strings: Binary, Real_Valued, Integer, Permutation')
-            
+            raise Exception('Wrong input in initialization_method, check DEFAULTS for more info')
 
-    def binary_representation(self):
-        print(self.population_size)
-        print(type(self.population_size))
-#        np.random.randint(2, size=())
+    def save_population(self, population):
+        if self.saving_method == 'csv':
+            print('zapis csv')
+            self.generator.save_csv(population)
 
-    def integer_representation(self):
-        pass
+        elif self.saving_method == 'xlsx':
+            print('zapis xlsx')
+            self.generator.save_xlsx(population)
 
-    def real_valued_representation(self):
-        pass
+        elif self.saving_method == 'json':
+            print('zapis json')
+            self.generator.save_json(population)
 
-    def permutation_representation(self):
-        pass
+        else:
+            raise Exception('Wrong input in saving method, check DEFAULTS for more info')
+
+
+    def generate(self):
+
+        binary_population = self.initialize_population()
+        self.save_population(binary_population)
+
+
+        #print(self.population_size)
+        #print(type(self.population_size))
 
         
 #print(Population_Generator().population_size)

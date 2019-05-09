@@ -4,6 +4,7 @@ from configparser import ConfigParser
 from abc import ABCMeta, abstractmethod
 import numpy as np
 import pandas as pd
+import random
 
 class Load_Configuration(object):
     '''
@@ -29,8 +30,8 @@ class Representation_Types(metaclass=ABCMeta):
 
 class Configuration_Executer(object):
     '''
-        This class provide functional operations on given dataset
-        whose will give reasonable output
+        This class provide functional operations on given configuration dataset
+        whose will give reasonable output after transformations
     '''
     config = Load_Configuration()
 
@@ -57,21 +58,56 @@ class Configuration_Executer(object):
 
     def random_initialization(self):
         population = pd.DataFrame()
-        print('tera tu')
+        
         if self.representation == 'Binary':
-            population = pd.DataFrame(data=np.random.randint(2, size=(self.population_size, self.chromosome_size)))
+            print("You have chosen Binary representation option")
+            if self.equal_chromosomes:
+                population = pd.DataFrame(data=np.random.randint(2, size=(self.population_size, self.chromosome_size)))
+
+            elif not self.equal_chromosomes:
+                print('You have chosen unequal chromosomes option')
+                population = pd.DataFrame(data=self.fill_unequal_chromosomes(0,1))
+                                                
+            else:
+                raise Exception('Could not specify chromosomes equality option')
+
 
         elif self.representation == 'Real_Valued':
-            self.real_valued_representation()
-        elif self.representation == 'Integer':
-            self.integer_representation()
-        elif self.representation == 'Permutation':
-            self.permutation_representation()
-        else:
-            raise Exception('Wrong value in representation input, check DEFAULTS for more info')
+            print("You have chosen Real Valued representation option")
+            min_gene = input('Select minimal possible value of gene')
+            max_gene = input('Select maximal possible value of gene')
 
-        if not self.equal_chromosomes:
-            self.generator.fill_unequal_chromosomes()        
+            
+       
+        
+        elif self.representation == 'Integer':
+            print("You have chosen Integer representation option")
+            try:
+                min_gene = int(input('Select minimal possible value of gene, must be an integer'))
+                max_gene = int(input('Select maximal possible value of gene, must be an integer'))
+                
+                if self.equal_chromosomes:
+                    population = pd.DataFrame(data=np.random.randint(min_gene, max_gene, size=(self.population_size, self.chromosome_size)))
+
+                elif not self.equal_chromosomes:
+                    
+
+                else:
+                    raise Exception('Could not specify chromosomes equality option')
+
+            except ValueError as v:
+                print('In integer representation, minimal and maximal possible selected gene must be also integer')
+
+
+        elif self.representation == 'Permutation':
+            print("You have chosen Permutation representation option")
+            min_gene = input('Select minimal possible value of gene')
+            max_gene = input('Select maximal possible value of gene')
+                        
+            #linspace
+
+        else:
+            raise Exception('Wrong value in representation input, check DEFAULTS for more info')    
 
         return population
 
@@ -80,27 +116,50 @@ class Configuration_Executer(object):
             self.generator.fill_unequal_chromosomes()        
         return
 
-    def fill_unequal_chromosomes(self):
-        pass
+    def fill_unequal_chromosomes(self, *args):
+        chromosomes_count = []
+
+        for layer in range(self.population_size):                
+            chromosomes_count[layer] = input('How many chromosomes in {0} layer, full chromosome length is {1}:'.format(layer, self.chromosome_size))
+                    
+            if chromosomes_count[layer] > self.chromosome_size:
+                chromosomes_count[layer] = self.chromosome_size
+                    
+            chromosomes_count[layer] = [random.randint(0, 1) for gene in range(chromosome_count[layer])]
 
     @staticmethod
-    def save_csv(population):
-        population.to_csv("../DataSets/tmp.csv")
-    
-    @staticmethod
-    def save_xlsx(population):
-        pass
-    
-    @staticmethod
-    def save_json(population):
-        pass
-                
+    def save(population, file_name):
+
+        if self.saving_method == 'csv':
+            try:
+                population.to_csv("../DataSets/{}".format(file_name))
+            except Exception as e:
+                print('Unable to save a dataframe')
+
+        elif self.saving_method == 'xlsx':
+            try:
+                population.to_excel("../DataSets/{}".format(file_name))
+            except Exception as e:
+                print('Unable to save a dataframe')
+
+        elif self.saving_method == 'json':
+            try:
+                population.to_json("../DataSets/{}".format(file_name))
+            except Exception as e:
+                print('Unable to save a dataframe')
+
+        else:
+            raise Exception('Wrong input in saving method, check DEFAULTS for more info')
+
+        finally:
+            print('Finish!\nPopulation Generated in DataSets directory')                                
 
                 
 class Population_Generator(Representation_Types, Configuration_Executer):
     '''
         This is main Generator class obliged for propietary
         executing Configuration_Executer functions  
+        and produce output file
     '''       
     generator = Configuration_Executer()
     
@@ -111,44 +170,22 @@ class Population_Generator(Representation_Types, Configuration_Executer):
 
     def initialize_population(self):
         if self.initialization_method == 'Random':
-            print('i jest random')
             return self.generator.random_initialization()
         
         elif self.initialization_method == 'Heuristic':
-            print('i jest heuristic')
             self.generator.heuristic_initialization()
                 
         else:
             raise Exception('Wrong input in initialization_method, check DEFAULTS for more info')
 
     def save_population(self, population):
-        if self.saving_method == 'csv':
-            print('zapis csv')
-            self.generator.save_csv(population)
+        file_name = input('How to name file : ')
+        self.generator.save(population, filename)
 
-        elif self.saving_method == 'xlsx':
-            print('zapis xlsx')
-            self.generator.save_xlsx(population)
-
-        elif self.saving_method == 'json':
-            print('zapis json')
-            self.generator.save_json(population)
-
-        else:
-            raise Exception('Wrong input in saving method, check DEFAULTS for more info')
-
-
+    
     def generate(self):
-
         binary_population = self.initialize_population()
         self.save_population(binary_population)
 
-
-        #print(self.population_size)
-        #print(type(self.population_size))
-
-        
-#print(Population_Generator().population_size)
-#print(Configuration_Executer().a())
 
 gen = Population_Generator()

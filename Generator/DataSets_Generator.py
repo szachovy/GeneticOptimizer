@@ -66,7 +66,7 @@ class Configuration_Executer(object):
 
             elif not self.equal_chromosomes:
                 print('You have chosen unequal chromosomes option')
-                population = pd.DataFrame(data=self.fill_unequal_chromosomes(0,1))
+                population = pd.DataFrame(data=self.fill_unequal_chromosomes(random.randint(0,1)))
                                                 
             else:
                 raise Exception('Could not specify chromosomes equality option')
@@ -74,10 +74,25 @@ class Configuration_Executer(object):
 
         elif self.representation == 'Real_Valued':
             print("You have chosen Real Valued representation option")
+
+            DEFAULT_PRECISION = 2
+
             min_gene = input('Select minimal possible value of gene')
             max_gene = input('Select maximal possible value of gene')
 
+            if min_gene > max_gene:
+                min_gene, max_gene = max_gene, min_gene
             
+            if self.equal_chromosomes:
+                chromosomes = []
+                for chromosome_layer in range(self.population_size):
+                    chromosomes[chromosome_layer] = [round(random.uniform(min_gene, max_gene), DEFAULT_PRECISION) for gene in range(self.chromosome_size)]            
+
+                population = pd.DataFrame(data=chromosomes)
+
+            elif not self.equal_chromosomes:
+                print('You have chosen unequal chromosomess option')
+                population = pd.DataFrame(data=self.fill_unequal_chromosomes(round(random.uniform(min_gene, max_gene), DEFAULT_PRECISION)))
        
         
         elif self.representation == 'Integer':
@@ -86,11 +101,15 @@ class Configuration_Executer(object):
                 min_gene = int(input('Select minimal possible value of gene, must be an integer'))
                 max_gene = int(input('Select maximal possible value of gene, must be an integer'))
                 
+                if min_gene > max_gene:
+                    min_gene, max_gene = max_gene, min_gene
+
                 if self.equal_chromosomes:
                     population = pd.DataFrame(data=np.random.randint(min_gene, max_gene, size=(self.population_size, self.chromosome_size)))
 
                 elif not self.equal_chromosomes:
-                    
+                    print('You have chosen unequal chromosomes option')
+                    population = pd.DataFrame(data=self.fill_unequal_chromosomes(random.randint(min_gene, max_gene)))
 
                 else:
                     raise Exception('Could not specify chromosomes equality option')
@@ -101,58 +120,86 @@ class Configuration_Executer(object):
 
         elif self.representation == 'Permutation':
             print("You have chosen Permutation representation option")
-            min_gene = input('Select minimal possible value of gene')
-            max_gene = input('Select maximal possible value of gene')
+            
+            try:
+                min_gene = int(input('Select minimal possible value of gene, must be an integer but remember'))
+                max_gene = int(input('Select maximal possible value of gene, must be an integer'))
+
+                try:
+                    assert((max_gene - min_gene) == self.chromosome_size)
+                except AssertionError as a:
+                    print('Difference between max and min gene must be equal chromosome size')
+
+                if min_gene > max_gene:
+                    min_gene, max_gene = max_gene, min_gene
                         
-            #linspace
+                if self.equal_chromosomes:
+                    chromosomes = []
+                    for chromosome_layer in range(self.population_size):
+                        chromosomes[chromosome_layer] = np.random.permutation([min_gene + gene for gene in range(max_gene - min_gene)])
+                
+                    population = pd.DataFrame(data=chromosomes)
+
+                elif not self.equal_chromosomes:
+                    print('You have chosen unequal chromosomes option')
+                    # tu sie trzeba zastanowic
+                    population = pd.DataFrame(data=self.fill_unequal_chromosomes())
+               
+                else:
+                    raise Exception('Could not specify chromosomes equality option')
+
+            except ValueError as v:
+                print('In integer representation, minimal and maximal possible selected gene must be also integer')
 
         else:
             raise Exception('Wrong value in representation input, check DEFAULTS for more info')    
 
         return population
 
+    # i`ll do it later
     def heuristic_initialization(self):
-        if not self.equal_chromosomes:
-            self.generator.fill_unequal_chromosomes()        
         return
 
-    def fill_unequal_chromosomes(self, *args):
-        chromosomes_count = []
+    def fill_unequal_chromosomes(self, args):
+        chromosomes = []
 
-        for layer in range(self.population_size):                
-            chromosomes_count[layer] = input('How many chromosomes in {0} layer, full chromosome length is {1}:'.format(layer, self.chromosome_size))
+        for chromosome_layer in range(self.population_size):                
+            chromosomes[chromosome_layer] = input('How many chromosomes in {0} layer, full chromosome length is {1}:'.format(chromosome_layer, self.chromosome_size))
                     
-            if chromosomes_count[layer] > self.chromosome_size:
-                chromosomes_count[layer] = self.chromosome_size
-                    
-            chromosomes_count[layer] = [random.randint(0, 1) for gene in range(chromosome_count[layer])]
+            if chromosomes[chromosome_layer] > self.chromosome_size:
+                chromosomes[chromosome_layer] = self.chromosome_size
+            
+            if self.representation == 'Permutation':        
+                chromosomes[chromosome_layer] = np.random.permutation([min_gene + gene for gene in range(max_gene - min_gene)])
+            else:        
+                chromosomes[chromosome_layer] = [args for gene in range(chromosomes[chromosome_layer])]
+
+        return chromosomes
 
     @staticmethod
     def save(population, file_name):
 
         if self.saving_method == 'csv':
             try:
-                population.to_csv("../DataSets/{}".format(file_name))
+                population.to_csv("../DataSets/{}.csv".format(file_name))
             except Exception as e:
                 print('Unable to save a dataframe')
 
         elif self.saving_method == 'xlsx':
             try:
-                population.to_excel("../DataSets/{}".format(file_name))
+                population.to_excel("../DataSets/{}.xlsx".format(file_name))
             except Exception as e:
                 print('Unable to save a dataframe')
 
         elif self.saving_method == 'json':
             try:
-                population.to_json("../DataSets/{}".format(file_name))
+                population.to_json("../DataSets/{}.json".format(file_name))
             except Exception as e:
                 print('Unable to save a dataframe')
 
         else:
             raise Exception('Wrong input in saving method, check DEFAULTS for more info')
-
-        finally:
-            print('Finish!\nPopulation Generated in DataSets directory')                                
+               
 
                 
 class Population_Generator(Representation_Types, Configuration_Executer):
@@ -184,8 +231,15 @@ class Population_Generator(Representation_Types, Configuration_Executer):
 
     
     def generate(self):
-        binary_population = self.initialize_population()
-        self.save_population(binary_population)
+        try:
+            binary_population = self.initialize_population()
+            self.save_population(binary_population)
+            print('Finish!\nPopulation Generated in DataSets directory')                         
 
+        except Exception as e:
+            print('Configurator executer failed')
+
+        finally:
+            exit(0)
 
 gen = Population_Generator()

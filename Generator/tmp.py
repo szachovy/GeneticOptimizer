@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 import random
-
+import csv
 # a = "a"
 # 
 # def check(a):
@@ -49,3 +49,31 @@ def func(*args):
 #    print([e for i in range(5)])
 
 func(a)
+
+a = input('co zapisac : ')
+print("../DataSets/{}.csv".format(a))
+
+
+class A(object):
+    def __init__(self):
+        print("jest a")
+    
+    def f(self):
+        print('czy siadzie?')
+
+
+class B(A):
+    
+    def __init__(self):
+        print('jest b')        
+        new = A()
+
+    def s(self):
+        new.f()
+
+n = B().s()
+
+
+
+
+

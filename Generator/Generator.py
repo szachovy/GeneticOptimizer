@@ -35,26 +35,8 @@ class Configuration_Executer(object):
     '''
     config = Load_Configuration()
 
-    def __init__(self, population_size=config.read('POPULATION_SIZE'), chromosome_size=config.read('CHROMOSOME_SIZE'), equal_chromosomes=config.read('EQUAL_CHROMOSOMES'), initialization_method=config.read('INITIALIZATION_METHOD'), representation = config.read('REPRESENTATION'), saving_method = config.read('SAVING_METHOD')):
-        
-        try:
-            self.population_size = int(population_size)
-        except ValueError as v:
-            print("Wrong type of population_size input, check DEFAULTS for more info")
-            
-        try:
-            self.chromosome_size = int(chromosome_size)
-        except ValueError as v:
-            print("Wrong type of chromosome_size input, check DEFAULTS for more info")    
-            
-        try:
-            self.equal_chromosomes = bool(equal_chromosomes)
-        except ValueError as v:
-            print("Wrong type of equal_chromosomes input, check DEFAULTS for more info")
-                
-        self.initialization_method = initialization_method
-        self.representation = representation
-        self.saving_method = saving_method
+    def __init__(self):
+        super(Population_Generator, cls).__init__()
 
     def random_initialization(self):
         population = pd.DataFrame()
@@ -176,9 +158,7 @@ class Configuration_Executer(object):
 
         return chromosomes
 
-    @staticmethod
-    def save(population, file_name):
-
+    def save(self, population, file_name):
         if self.saving_method == 'csv':
             try:
                 population.to_csv("../DataSets/{}.csv".format(file_name))
@@ -209,10 +189,29 @@ class Population_Generator(Representation_Types, Configuration_Executer):
         and produce output file
     '''       
     generator = Configuration_Executer()
-    
-    def __init__(self):
-        super().__init__()
-        self.generate()        
+
+    def __init__(self, population_size=config.read('POPULATION_SIZE'), chromosome_size=config.read('CHROMOSOME_SIZE'), equal_chromosomes=config.read('EQUAL_CHROMOSOMES'), initialization_method=config.read('INITIALIZATION_METHOD'), representation = config.read('REPRESENTATION'), saving_method = config.read('SAVING_METHOD')):
+        try:
+            self.population_size = int(population_size)
+        except ValueError as v:
+            print("Wrong type of population_size input, check DEFAULTS for more info")
+                   
+        try:
+            self.chromosome_size = int(chromosome_size)
+        except ValueError as v:
+            print("Wrong type of chromosome_size input, check DEFAULTS for more info")    
+                   
+        try:
+            self.equal_chromosomes = bool(equal_chromosomes)
+        except ValueError as v:
+            print("Wrong type of equal_chromosomes input, check DEFAULTS for more info")   
+
+        self.initialization_method = initialization_method
+        self.representation = representation
+        self.saving_method = saving_method    
+
+        self.generate()
+
     
 
     def initialize_population(self):
@@ -227,7 +226,7 @@ class Population_Generator(Representation_Types, Configuration_Executer):
 
     def save_population(self, population):
         file_name = input('How to name file : ')
-        self.generator.save(population, filename)
+        self.generator.save(population, file_name)
 
     
     def generate(self):

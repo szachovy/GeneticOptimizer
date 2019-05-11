@@ -3,7 +3,7 @@
 import numpy as np
 import pandas as pd
 import random
-
+import xlsxwriter # support saving xlsx file in unix-domain systems
 
 class Configuration_Executer(object):
     '''
@@ -30,7 +30,17 @@ class Configuration_Executer(object):
 
             elif not self.equal_chromosomes:
                 print('You have chosen unequal chromosomes option')
-                population = pd.DataFrame(data=self.fill_unequal_chromosomes(random.randint(0,1)))
+                chromosomes = []
+
+                for chromosome_layer in range(self.population_size):                
+                    count = int(input('How many chromosomes in {0} layer, full chromosome length is {1} : '.format(chromosome_layer, self.chromosome_size)))
+                    
+                    if count > self.chromosome_size:
+                        count = self.chromosome_size
+                 
+                    chromosomes.append([random.randint(0, 1) for gene in range(count)])
+                
+                population = pd.DataFrame(data=chromosomes)
                                                 
             else:
                 raise Exception('Could not specify chromosomes equality option')
@@ -41,8 +51,8 @@ class Configuration_Executer(object):
 
             DEFAULT_PRECISION = 2
 
-            min_gene = input('Select minimal possible value of gene : ')
-            max_gene = input('Select maximal possible value of gene : ')
+            min_gene = float(input('Select minimal possible value of gene : '))
+            max_gene = float(input('Select maximal possible value of gene : '))
 
             if min_gene > max_gene:
                 min_gene, max_gene = max_gene, min_gene
@@ -50,13 +60,23 @@ class Configuration_Executer(object):
             if self.equal_chromosomes:
                 chromosomes = []
                 for chromosome_layer in range(self.population_size):
-                    chromosomes[chromosome_layer] = [round(random.uniform(min_gene, max_gene), DEFAULT_PRECISION) for gene in range(self.chromosome_size)]            
+                    chromosomes.append([round(random.uniform(min_gene, max_gene), DEFAULT_PRECISION) for gene in range(self.chromosome_size)])            
 
                 population = pd.DataFrame(data=chromosomes)
 
             elif not self.equal_chromosomes:
                 print('You have chosen unequal chromosomess option')
-                population = pd.DataFrame(data=self.fill_unequal_chromosomes(round(random.uniform(min_gene, max_gene), DEFAULT_PRECISION)))
+                chromosomes = []
+
+                for chromosome_layer in range(self.population_size):                
+                    count = int(input('How many chromosomes in {0} layer, full chromosome length is {1} : '.format(chromosome_layer, self.chromosome_size)))
+                    
+                    if count > self.chromosome_size:
+                        count = self.chromosome_size
+                 
+                    chromosomes.append([round(random.uniform(min_gene, max_gene), DEFAULT_PRECISION) for gene in range(count)])
+                
+                population = pd.DataFrame(data=chromosomes)
        
         
         elif self.representation == 'Integer':
@@ -73,7 +93,17 @@ class Configuration_Executer(object):
 
                 elif not self.equal_chromosomes:
                     print('You have chosen unequal chromosomes option')
-                    population = pd.DataFrame(data=self.fill_unequal_chromosomes(random.randint(min_gene, max_gene)))
+                    chromosomes = []
+
+                    for chromosome_layer in range(self.population_size):                
+                        count = int(input('How many chromosomes in {0} layer, full chromosome length is {1} : '.format(chromosome_layer, self.chromosome_size)))
+                    
+                        if count > self.chromosome_size:
+                            count = self.chromosome_size
+                 
+                        chromosomes.append([random.randint(min_gene, max_gene) for gene in range(count)])
+
+                    population = pd.DataFrame(data=chromosomes)
 
                 else:
                     raise Exception('Could not specify chromosomes equality option')
@@ -100,14 +130,24 @@ class Configuration_Executer(object):
                 if self.equal_chromosomes:
                     chromosomes = []
                     for chromosome_layer in range(self.population_size):
-                        chromosomes[chromosome_layer] = np.random.permutation([min_gene + gene for gene in range(max_gene - min_gene)])
+                        chromosomes.append(np.random.permutation([min_gene + gene for gene in range(max_gene - min_gene)]))
                 
                     population = pd.DataFrame(data=chromosomes)
 
                 elif not self.equal_chromosomes:
                     print('You have chosen unequal chromosomes option')
+                    chromosomes = []
+
+                    for chromosome_layer in range(self.population_size):                
+                        count = int(input('How many chromosomes in {0} layer, full chromosome length is {1} : '.format(chromosome_layer, self.chromosome_size)))
+                    
+                        if count > self.chromosome_size:
+                            count = self.chromosome_size
+                 
+                        chromosomes.append(np.random.permutation([min_gene + gene for gene in range(count)]))
                     # tu sie trzeba zastanowic
-                    population = pd.DataFrame(data=self.fill_unequal_chromosomes())
+
+                    population = pd.DataFrame(data=chromosomes)
                
                 else:
                     raise Exception('Could not specify chromosomes equality option')
@@ -124,22 +164,6 @@ class Configuration_Executer(object):
     def heuristic_initialization(self):
         return
 
-    def fill_unequal_chromosomes(self, args):
-        chromosomes = []
-
-        for chromosome_layer in range(self.population_size):                
-            chromosomes[chromosome_layer] = input('How many chromosomes in {0} layer, full chromosome length is {1}:'.format(chromosome_layer, self.chromosome_size))
-                    
-            if chromosomes[chromosome_layer] > self.chromosome_size:
-                chromosomes[chromosome_layer] = self.chromosome_size
-            
-            if self.representation == 'Permutation':        
-                chromosomes[chromosome_layer] = np.random.permutation([min_gene + gene for gene in range(max_gene - min_gene)])
-            else:        
-                chromosomes[chromosome_layer] = [args for gene in range(chromosomes[chromosome_layer])]
-
-        return chromosomes
-
     def save(self, population, file_name):
         if self.saving_method == 'csv':
             try:
@@ -155,7 +179,7 @@ class Configuration_Executer(object):
 
         elif self.saving_method == 'json':
             try:
-                population.to_json("../DataSets/{}.json".format(file_name), engine='xlsxwriter')
+                population.to_json("../DataSets/{}.json".format(file_name))
             except Exception as e:
                 print('Unable to save a dataframe')
 

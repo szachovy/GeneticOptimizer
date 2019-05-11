@@ -85,5 +85,5 @@ class Generator(Representation_Types):
         finally:
             exit(0)
 
-gen = Generator(representation='Permutation')
+gen = Generator()
 

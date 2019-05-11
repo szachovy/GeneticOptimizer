@@ -1,8 +1,11 @@
 #!/usr/bin/env python3 
 
+__author__ = 'WJ Maj'
+
 from configparser import ConfigParser
 from abc import ABCMeta, abstractmethod
-from configuration_exec import Configuration_Executer
+import re
+from configuration_exec import Configuration_Executer # This module is placed in Generator directory (to prevent navigation problems)
 
 class Load_Configuration(object):
     '''
@@ -36,48 +39,43 @@ class Generator(Representation_Types):
     config = Load_Configuration()
 
     def __init__(self, population_size=config.read('POPULATION_SIZE'), chromosome_size=config.read('CHROMOSOME_SIZE'), equal_chromosomes=config.read('EQUAL_CHROMOSOMES'), initialization_method=config.read('INITIALIZATION_METHOD'), representation = config.read('REPRESENTATION'), saving_method = config.read('SAVING_METHOD')):
-        try:
-            self.population_size = int(population_size)
-        except ValueError as v:
-            print("Wrong type of population_size input, check DEFAULTS for more info")
-                   
-        try:
-            self.chromosome_size = int(chromosome_size)
-        except ValueError as v:
-            print("Wrong type of chromosome_size input, check DEFAULTS for more info")    
-                   
-        try:
-            self.equal_chromosomes = bool(equal_chromosomes)
-        except ValueError as v:
-            print("Wrong type of equal_chromosomes input, check DEFAULTS for more info")   
 
         self.initialization_method = initialization_method
-        self.representation = representation
-        self.saving_method = saving_method    		
         self.generator = Configuration_Executer(population_size, chromosome_size, equal_chromosomes, initialization_method, representation, saving_method)
         self.generate()
 		    
 
     def initialize_population(self):
-        if self.initialization_method == 'Random':
-            return self.generator.random_initialization()
+        try:
+            if self.initialization_method == 'Random':
+                return self.generator.random_initialization()
         
-        elif self.initialization_method == 'Heuristic':
-            self.generator.heuristic_initialization()
+            elif self.initialization_method == 'Heuristic':
+                print("Heuristic mode is not implemented yet, please be patient")
+                exit(0)
+                return self.generator.heuristic_initialization()
                 
-        else:
+        except Exception as e:
             raise Exception('Wrong input in initialization_method, check DEFAULTS for more info')
+            exit(0)
 
     def save_population(self, population):
+
         file_name = input('How to name file : ')
-        self.generator.save(population, file_name)
+        try:
+            assert(bool(re.match('^[a-zA-Z0-9]+$', file_name)))
+            self.generator.save(population, file_name)
+
+        except AssertionError as a:
+            print('Incorrect file name')
+            exit(0)
 
     
     def generate(self):
         try:
             binary_population = self.initialize_population()
             self.save_population(binary_population)
-            print('Finish!\nPopulation Generated in DataSets directory')                         
+            print('Finish!\nPopulation Generated in datasets directory')                         
 
         except Exception as e:
             print('Configurator executer failed')

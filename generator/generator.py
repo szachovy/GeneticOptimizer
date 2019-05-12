@@ -1,11 +1,12 @@
 #!/usr/bin/env python3 
+# -*- coding: utf-8 -*-
 
 __author__ = 'WJ Maj'
 
 from configparser import ConfigParser
 from abc import ABCMeta, abstractmethod
 import re
-from configuration_exec import Configuration_Executer # This module is placed in Generator directory (to prevent navigation problems)
+from conf_exec import Configuration_Executer # This module is placed in Generator directory (to prevent navigation problems)
 
 class Load_Configuration(object):
     '''
@@ -14,7 +15,7 @@ class Load_Configuration(object):
     '''
     def __init__(self):
         self.config = ConfigParser()
-        self.config.read('DEFAULTS.ini')
+        self.config.read('DEFAULTS.conf')
             
     def read(self, argument):
         return self.config['GENERATOR'][argument]

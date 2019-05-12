@@ -180,19 +180,19 @@ class Configuration_Executer(object):
 
         if self.saving_method == 'csv':
             try:    
-                population.to_csv("..{}datasets{}{}.csv".format(getos_slashes, getos_slashes, file_name))
+                population.to_csv("datasets{}{}.csv".format(getos_slashes, file_name))
             except Exception as e:
                 print('Unable to save a dataframe in csv format')
 
         elif self.saving_method == 'xlsx':
             try:
-                population.to_excel("..{}datasets{}{}.xlsx".format(getos_slashes, getos_slashes, file_name))
+                population.to_excel("datasets{}{}.xlsx".format(getos_slashes, file_name))
             except Exception as e:
                 print('Unable to save a dataframe in xlsx format')
 
         elif self.saving_method == 'json':
             try:
-                population.to_json("..{}datasets{}{}.json".format(getos_slashes, getos_slashes, file_name))
+                population.to_json("datasets{}{}.json".format(getos_slashes, file_name))
             except Exception as e:
                 print('Unable to save a dataframe in json format')
 

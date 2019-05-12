@@ -12,19 +12,6 @@ try:
 except ImportError:
     from .conf_exec import Configuration_Executer
 
-class Load_Configuration(object):
-    '''
-        This is auxiliary class for configuration purposes,
-        used from DEFAULTS.ini file placed in this directory.
-    '''
-    def __init__(self):
-        self.config = ConfigParser()
-        self.config.read('DEFAULTS.ini')
-            
-    def read(self, argument):
-        return self.config['GENERATOR'][argument]
-
-
 class Representation_Types(metaclass=ABCMeta):
     '''
        This class is concerned for implementation issues comes from
@@ -41,9 +28,7 @@ class Generator(Representation_Types):
         executing Configuration_Executer functions  
         and produce output file
     '''       
-    config = Load_Configuration()
-
-    def __init__(self, population_size=config.read('POPULATION_SIZE'), chromosome_size=config.read('CHROMOSOME_SIZE'), equal_chromosomes=config.read('EQUAL_CHROMOSOMES'), initialization_method=config.read('INITIALIZATION_METHOD'), representation = config.read('REPRESENTATION'), saving_method = config.read('SAVING_METHOD')):
+    def __init__(self, population_size, chromosome_size, equal_chromosomes, initialization_method, representation, saving_method):
 
         self.initialization_method = initialization_method
         self.generator = Configuration_Executer(population_size, chromosome_size, equal_chromosomes, initialization_method, representation, saving_method)
@@ -87,5 +72,3 @@ class Generator(Representation_Types):
 
         finally:
             exit(0)
-
-gen = Generator()

@@ -6,7 +6,11 @@ __author__ = 'WJ Maj'
 from configparser import ConfigParser
 from abc import ABCMeta, abstractmethod
 import re
-from conf_exec import Configuration_Executer # This module is placed in Generator directory (to prevent navigation problems)
+
+try:
+    from conf_exec import Configuration_Executer # This module is placed in Generator directory (to prevent navigation problems)
+except ImportError:
+    from .conf_exec import Configuration_Executer
 
 class Load_Configuration(object):
     '''
@@ -15,7 +19,7 @@ class Load_Configuration(object):
     '''
     def __init__(self):
         self.config = ConfigParser()
-        self.config.read('DEFAULTS.conf')
+        self.config.read('DEFAULTS.ini')
             
     def read(self, argument):
         return self.config['GENERATOR'][argument]
@@ -85,4 +89,3 @@ class Generator(Representation_Types):
             exit(0)
 
 gen = Generator()
-

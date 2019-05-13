@@ -17,16 +17,21 @@ from configparser import ConfigParser
 #datetime
 # tempfile with latest configuration
 
-#    def __init__(self, population_size=config.read('POPULATION_SIZE'), chromosome_size=config.read('CHROMOSOME_SIZE'), equal_chromosomes=config.read('EQUAL_CHROMOSOMES'), initialization_method=config.read('INITIALIZATION_METHOD'), representation = config.read('REPRESENTATION'), saving_method = config.read('SAVING_METHOD')):
+
+
 
 class Genetic_Optimizer(object):
     config = Load_Configuration()
-#    def __init__(self, mnt = 5):        
+
+    def __init__(self, mnt = 5):        
 #        super().__init__(mnt)
 #        print(self.a)
-
-    def generate(self, population_size=config.read('POPULATION_SIZE'), chromosome_size=config.read('CHROMOSOME_SIZE'), equal_chromosomes=config.read('EQUAL_CHROMOSOMES'), initialization_method=config.read('INITIALIZATION_METHOD'), representation=config.read('REPRESENTATION'), saving_method=config.read('SAVING_METHOD')):
+        pass
+    def generate(self, population_size=config.read('POPULATION_SIZE'), chromosome_size=config.read('CHROMOSOME_SIZE'), equal_chromosomes=config.read('EQUAL_CHROMOSOMES'),initialization_method=config.read('INITIALIZATION_METHOD'), representation=config.read('REPRESENTATION'), saving_method=config.read('SAVING_METHOD')):
         Generator(population_size, chromosome_size, equal_chromosomes, initialization_method, representation, saving_method)
+
+    def optimize(self, file_name):
+        return
 
 if __name__ == '__main__':
     gen = Genetic_Optimizer()

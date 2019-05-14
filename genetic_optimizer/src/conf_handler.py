@@ -4,6 +4,7 @@ __author__ = 'WJ Maj'
 from configparser import ConfigParser
 import os
 import socket
+import platform
 
 def path_existence(PATH):
     try:
@@ -17,16 +18,33 @@ def dir_existence(path):
         assert(os.path.isdir(path))
         return True
     except AssertionError as a:
-        raise IOError("input or output dir moved or doesn`t exists")    
+        raise IOError("input or output dir moved or doesn`t exists")  
+
+# def os_slashes(func):
+    # def wrapper(*args, **kwargs):
+        # if platform.system() == 'Linux':
+            # slashes = '/'
+            # func(self, slashes)
+        # else:
+            # slashes = '\\'
+            # func(self, slashes)
+    # return wrapper
+
+def os_slashes():
+    if platform.system() == 'Linux':
+        return '/'
+    else:
+        return '\\'
 
 class Load_Configuration(object):
     '''
         This is auxiliary class for generator configuration purposes,
         used from DEFAULTS.ini file placed in this Generator directory.
     '''
-    PATH = './Generator/DEFAULTS.ini'
-
+#    @os_slashes
     def __init__(self):
+        self.slashes = os_slashes()
+        self.PATH = '.{}Generator{}DEFAULTS.ini'.format(self.slashes, self.slashes)
         if path_existence(self.PATH):
             self.config = ConfigParser()
             self.config.read(self.PATH)
@@ -40,15 +58,17 @@ class Main_Configuration(object):
         Configuration class used by STANDARDS.conf to manipulate
         some behaviour used for genetic_optimizer algorythms
     '''
-    PATH = 'STANDARDS.conf'
 
+#    @os_slashes
     def __init__(self):
+        self.slashes = os_slashes()
+        self.PATH = '.{}src{}STANDARDS.conf'.format(self.slashes, self.slashes)
         if path_existence(self.PATH):
             self.config = ConfigParser()
             self.config.read(self.PATH)
-            # REMEMBER TO CHANGE IT WHEN DEPLOY
-            self.in_dir = str("../" + self.config.get('INPUTLOCATION', 'DIR'))
-            self.out_dir =str("../" + self.config.get('OUTPUTLOCATION', 'DIR'))
+            # REMEMBER TO CHANGE IT WHEN DEPLOY IF ERR
+            self.in_dir = str(".{}" + self.config.get('INPUTLOCATION', 'DIR') + "{}").format(self.slashes, self.slashes)
+            self.out_dir =str(".{}" + self.config.get('OUTPUTLOCATION', 'DIR') + "{}").format(self.slashes, self.slashes)
 
     def performance(self):
         getperformance = {'min' : self.config.get('PERFORMANCE', 'MINITER'), 'max' : self.config.get('PERFORMANCE', 'MAXITER')}
@@ -63,10 +83,10 @@ class Main_Configuration(object):
             getfiles = {'file_name' : None, 'fig_name' : None}
 
             if bool(self.config.get('OUTPUTLOCATION', 'DOOUT')):
-                getfiles['file_name'] = str(self.out_dir + '/' + self.config.get('OUTPUTLOCATION', 'OUTNAME') + '.' + self.config.get('OUTPUTLOCATION', 'OUTFORMAT'))
+                getfiles['file_name'] = str(self.out_dir + self.config.get('OUTPUTLOCATION', 'OUTNAME') + '.' + self.config.get('OUTPUTLOCATION', 'OUTFORMAT'))
 
             if bool(self.config.get('OUTPUTLOCATION', 'DOFIG')):
-                getfiles['fig_name'] = str(self.out_dir + '/' + self.config.get('OUTPUTLOCATION', 'FIGNAME') + '.' + self.config.get('OUTPUTLOCATION', 'FIGFORMAT'))
+                getfiles['fig_name'] = str(self.out_dir + self.config.get('OUTPUTLOCATION', 'FIGNAME') + '.' + self.config.get('OUTPUTLOCATION', 'FIGFORMAT'))
 
             return getfiles
 
@@ -99,3 +119,4 @@ class Main_Configuration(object):
         if bool(self.config.get('SERVER', 'ACTIVE')):
             pass
         return
+

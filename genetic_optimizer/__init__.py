@@ -12,13 +12,19 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from configparser import ConfigParser
+import inspect
 
 #pyspark
-#cython
-#datetime
 # tempfile with latest configuration
 
-
+def check_file(opt):
+    def wrapper(*args):
+        try:
+            if args[1]:
+                opt(*args)
+        except IndexError as i:
+            print('type file name placed in datasets directory which will be optimized, ex. Genetic_Optimizer().optimize(myfile.csv)')
+    return wrapper
 
 
 class Genetic_Optimizer(object):
@@ -26,13 +32,13 @@ class Genetic_Optimizer(object):
 
     def generate(self, population_size=config.read('POPULATION_SIZE'), chromosome_size=config.read('CHROMOSOME_SIZE'), equal_chromosomes=config.read('EQUAL_CHROMOSOMES'),initialization_method=config.read('INITIALIZATION_METHOD'), representation=config.read('REPRESENTATION'), saving_method=config.read('SAVING_METHOD')):
         Generator(population_size, chromosome_size, equal_chromosomes, initialization_method, representation, saving_method)
-
-    def optimize(self, file_name):
-        print(file_name)
+    
+    @check_file
+    def optimize(self, file_name : str):
         Preprocess_Dataframe(file_name)        
 
 if __name__ == '__main__':
     gen = Genetic_Optimizer()
 #    gen.generate()
-    gen.optimize('bineq.csv')
+    gen.optimize('binneq.csv')
     

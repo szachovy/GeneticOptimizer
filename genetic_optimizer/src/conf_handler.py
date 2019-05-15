@@ -20,16 +20,6 @@ def dir_existence(path):
     except AssertionError as a:
         raise IOError("input or output dir moved or doesn`t exists")  
 
-# def os_slashes(func):
-    # def wrapper(*args, **kwargs):
-        # if platform.system() == 'Linux':
-            # slashes = '/'
-            # func(self, slashes)
-        # else:
-            # slashes = '\\'
-            # func(self, slashes)
-    # return wrapper
-
 def os_slashes():
     if platform.system() == 'Linux':
         return '/'
@@ -41,7 +31,7 @@ class Load_Configuration(object):
         This is auxiliary class for generator configuration purposes,
         used from DEFAULTS.ini file placed in this Generator directory.
     '''
-#    @os_slashes
+
     def __init__(self):
         self.slashes = os_slashes()
         self.PATH = '.{}Generator{}DEFAULTS.ini'.format(self.slashes, self.slashes)
@@ -59,7 +49,6 @@ class Main_Configuration(object):
         some behaviour used for genetic_optimizer algorythms
     '''
 
-#    @os_slashes
     def __init__(self):
         self.slashes = os_slashes()
         self.PATH = '.{}src{}STANDARDS.conf'.format(self.slashes, self.slashes)
@@ -71,8 +60,16 @@ class Main_Configuration(object):
             self.out_dir =str(".{}" + self.config.get('OUTPUTLOCATION', 'DIR') + "{}").format(self.slashes, self.slashes)
 
     def performance(self):
-        getperformance = {'min' : self.config.get('PERFORMANCE', 'MINITER'), 'max' : self.config.get('PERFORMANCE', 'MAXITER')}
-        return getperformance
+        cross = self.config.get('PERFORMANCE', 'CROSSPROB')
+        mut = self.config.get('PERFORMANCE', 'MUTPROB')
+
+        if (cross + mut) != 1:
+            raise Exception('Sum of crossover probability and mutation probability is not equal to 1 (100%)')
+        
+        else:
+            getperformance = {'min' : self.config.get('PERFORMANCE', 'MINITER'), 'max' : self.config.get('PERFORMANCE', 'MAXITER'),
+                            'cross' : cross, 'mut' : mut}
+            return getperformance
 
     def input_loc(self):
         if dir_existence(self.in_dir):        
@@ -96,20 +93,8 @@ class Main_Configuration(object):
                 return True
         return False
 
-    def err_log_file(self):
-        if dir_existence(self.out_dir):
-            if bool(self.config.get('SYSTEM', 'ERRLOGFILE')):
-                return True
-        return False
-
     def timestamp(self):
         if bool(self.config.get('SYSTEM', 'SETTIMESTAMP')):
-            return True
-        else:
-            return False
-
-    def settimeit(self):
-        if bool(self.config.get('SYSTEM', 'SETTIMEIT')):
             return True
         else:
             return False

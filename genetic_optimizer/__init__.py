@@ -7,6 +7,7 @@ from src.conf_handler import Load_Configuration
 from Generator.generator import Generator
 from src.preprocessing import Preprocess_Dataframe
 from src.fitness import Fitness
+from src.meta import Implement_Func
 
 import timeit
 import pandas as pd
@@ -27,7 +28,7 @@ def check_file(opt):
     return wrapper
 
 
-class Genetic_Optimizer(object):
+class Genetic_Optimizer(Implement_Func):
     config = Load_Configuration()
 
     def generate(self, population_size=config.read('POPULATION_SIZE'), chromosome_size=config.read('CHROMOSOME_SIZE'), equal_chromosomes=config.read('EQUAL_CHROMOSOMES'),initialization_method=config.read('INITIALIZATION_METHOD'), representation=config.read('REPRESENTATION'), saving_method=config.read('SAVING_METHOD')):

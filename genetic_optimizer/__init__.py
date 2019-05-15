@@ -6,13 +6,13 @@ __author__ = 'WJ Maj'
 from src.conf_handler import Load_Configuration
 from Generator.generator import Generator
 from src.preprocessing import Preprocess_Dataframe
+from src.fitness import Fitness
 
 import timeit
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from configparser import ConfigParser
-import inspect
 
 #pyspark
 # tempfile with latest configuration
@@ -35,8 +35,8 @@ class Genetic_Optimizer(object):
     
     @check_file
     def optimize(self, file_name : str):
-        Preprocess_Dataframe(file_name)        
-
+#        Preprocess_Dataframe(file_name)        
+        Fitness(file_name)
 if __name__ == '__main__':
     gen = Genetic_Optimizer()
 #    gen.generate()

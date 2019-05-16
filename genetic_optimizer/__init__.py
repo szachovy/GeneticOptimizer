@@ -8,6 +8,7 @@ from Generator.generator import Generator
 from src.preprocessing import Preprocess_Dataframe
 from src.fitness import Fitness
 from src.meta import Implement_Func
+from src.optimizator import Optimizer
 
 import timeit
 import pandas as pd
@@ -37,7 +38,8 @@ class Genetic_Optimizer(Implement_Func):
     @check_file
     def optimize(self, file_name : str):
 #        Preprocess_Dataframe(file_name)        
-        Fitness(file_name)
+#        Fitness(file_name)
+        Optimizer(file_name)
 
 if __name__ == '__main__':
     gen = Genetic_Optimizer()

@@ -5,6 +5,7 @@ from configparser import ConfigParser
 import os
 import socket
 import platform
+import numpy as np
 
 def path_existence(PATH):
     try:
@@ -60,11 +61,11 @@ class Main_Configuration(object):
             self.out_dir =str(".{}" + self.config.get('OUTPUTLOCATION', 'DIR') + "{}").format(self.slashes, self.slashes)
 
     def performance(self):
-        cross = self.config.get('PERFORMANCE', 'CROSSPROB')
-        mut = self.config.get('PERFORMANCE', 'MUTPROB')
+        cross = float(self.config.get('PERFORMANCE', 'CROSSPROB'))
+        mut = float(self.config.get('PERFORMANCE', 'MUTATIONPROB'))
 
-        if (cross + mut) != 1:
-            raise Exception('Sum of crossover probability and mutation probability is not equal to 1 (100%)')
+        if (cross or mut) not in np.arange(0, 2, 0.01):
+            raise Exception('Sum of crossover probability and mutation probability must be in range from 0 to 1 (0% - 100%)')
         
         else:
             getperformance = {'min' : self.config.get('PERFORMANCE', 'MINITER'), 'max' : self.config.get('PERFORMANCE', 'MAXITER'),

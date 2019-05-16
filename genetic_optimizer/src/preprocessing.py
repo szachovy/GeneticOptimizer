@@ -30,9 +30,17 @@ class Preprocess_Dataframe(object):
 
         self.drop_unnamed()
         self.check_types()
+        self.all_nan_exception()
 
         self.log = str(datetime.now()) + "\n" + "File found and cleaned properly\n"
         print(self.log)
+
+    def all_nan_exception(self):
+        population_transposed = self.population.transpose()
+
+        for column in population_transposed:
+            if population_transposed[column].isnull().all():
+                raise Exception('Each chromosome must have at least one gene')
 
     def check_types(self):
         accepted_types = [np.int64, np.float64]

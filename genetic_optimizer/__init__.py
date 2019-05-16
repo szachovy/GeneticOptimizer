@@ -38,8 +38,9 @@ class Genetic_Optimizer(Implement_Func):
     def optimize(self, file_name : str):
 #        Preprocess_Dataframe(file_name)        
         Fitness(file_name)
+
 if __name__ == '__main__':
     gen = Genetic_Optimizer()
 #    gen.generate()
-    gen.optimize('binneq.csv')
+    gen.optimize('permneq.csv')
     

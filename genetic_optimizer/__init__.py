@@ -44,5 +44,5 @@ class Genetic_Optimizer(Implement_Func):
 if __name__ == '__main__':
     gen = Genetic_Optimizer()
 #    gen.generate()
-    gen.optimize('permneq.csv')
+    gen.optimize('bineq.csv')
     

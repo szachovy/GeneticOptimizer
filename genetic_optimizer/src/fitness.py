@@ -47,5 +47,9 @@ class Fitness(Preprocess_Dataframe):
 
             get_denominator += 1
 
-        fit_population = pd.DataFrame(fit_population).sum(axis = 1)
+        fit_population = pd.DataFrame(fit_population)
+
+        fit_population['Total'] = fit_population.sum(axis=1)
+        fit_population['Chromosome'] = [index for index in range(fit_population.shape[0])]
+
         return fit_population

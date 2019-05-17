@@ -63,13 +63,23 @@ class Main_Configuration(object):
     def performance(self):
         cross = float(self.config.get('PERFORMANCE', 'CROSSPROB'))
         mut = float(self.config.get('PERFORMANCE', 'MUTATIONPROB'))
+        miniter = float(self.config.get('PERFORMANCE', 'MINITER'))
+        maxiter = float(self.config.get('PERFORMANCE', 'MAXITER'))
+        chromosome_weight = float(self.config.get('PERFORMANCE', 'CHROMOSOMELAYERWEIGHT'))
+
 
         if (cross or mut) not in np.arange(0, 2, 0.01):
             raise Exception('Sum of crossover probability and mutation probability must be in range from 0 to 1 (0% - 100%)')
         
+        elif (miniter or maxiter or chromosome_weight) < 0:
+            raise Exception('All features in PERFORMANCE section must be positive')
+
+        elif miniter > maxiter:
+            raise Exception('Minimum number of iterations cannot be greater number than maximun number of iterations')
+
         else:
-            getperformance = {'min' : self.config.get('PERFORMANCE', 'MINITER'), 'max' : self.config.get('PERFORMANCE', 'MAXITER'),
-                            'cross' : cross, 'mut' : mut}
+            getperformance = {'min' : miniter, 'max' : maxiter,
+                            'cross' : cross, 'mut' : mut, 'chromosome_weight' : chromosome_weight}
             return getperformance
 
     def input_loc(self):

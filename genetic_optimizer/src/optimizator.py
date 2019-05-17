@@ -6,7 +6,8 @@ except ModuleNotFoundError as m:
     from .fitness import Fitness
 
 from sklearn.cluster import KMeans
-
+import matplotlib.pyplot as plt
+import math
 
 #from sklearn.cluster import KMeans
 #naive bayes
@@ -17,16 +18,42 @@ class Optimizer(Fitness):
         self.performance = self.config.performance()
         self.fitted_population = self.fit_population()
         print(self.fitted_population)
-#        self.elbow()
-        self.group_population()
+        self.elbow()
+#        self.group_population()
 
     def elbow(self):
-        print(self.fitted_population.shape[0])
-        for cluster in range(1, 101):
-            kmeanModel = KMeans(n_clusters=cluster).fit(self.fitted_population)
-            kmeanModel.fit(self.fitted_population)
-            distortions.append(sum(np.min(cdist(self.fitted_population, kmeanModel.cluster_centers_, 'euclidean'), axis=1)) / self.fitted_population.shape[0])
+        self.fitted_population['Chromosome'] = self.fitted_population['Chromosome'] * self.performance['chromosome_weight']
+        sum_of_squared_distances = []
+        for cluster in range(1, int(self.population.shape[0]) + 1):
+            clusters_no = KMeans(n_clusters=cluster)
+            clusters_no = clusters_no.fit(self.fitted_population[['Chromosome', 'Total']])
+            sum_of_squared_distances.append(clusters_no.inertia_)
+        
+        print(sum_of_squared_distances)
+        self.linear_group_size(sum_of_squared_distances)
+        
+        # plt.plot(range(1, int(self.population.shape[0])), Sum_of_squared_distances, 'bx-')
+        # plt.xlabel('k')
+        # plt.ylabel('Sum_of_squared_distances')
+        # plt.title('Elbow Method For Optimal k')
+        # plt.show()
+#distortions.append(sum(np.min(cdist(self.fitted_population, kmeanModel.cluster_centers_, 'euclidean'), axis=1)) / self.fitted_population.shape[0])
 
+    def linear_group_size(self, sum_of_squared_distances):
+#        sum_of_squared_distances[0] == 22.78.. na osi y dla 1 na osi x
+#        sum_of_squared_distances[int(self.population.shape[0])-1] == 0.0 na osi y dla int(self.population.shape[0]) na osi x
+     #   sum_of_squared_distances[int(self.population.shape[0])-1] - sum_of_squared_distances[0] = int(self.population.shape[0])*a - a
+        slope = (sum_of_squared_distances[int(self.population.shape[0])-1] - sum_of_squared_distances[0]) / (int(self.population.shape[0]) - 1)
+        print(slope)
+        intercept = sum_of_squared_distances[0] - slope
+        print(intercept)
+        
+        distance = []
+        for label in range(len(sum_of_squared_distances)):
+            distance.append(abs((slope * label) - (sum_of_squared_distances[label]) + intercept)/(math.sqrt(slope**2 + intercept**2)))
+        
+        return distance.index(max(distance))
+            
     def group_population(self):
         self.fitted_population['Chromosome'] = self.fitted_population['Chromosome'] * self.performance['chromosome_weight']
         population_groups = KMeans(n_clusters=4)

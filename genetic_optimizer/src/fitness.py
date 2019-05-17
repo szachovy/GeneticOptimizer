@@ -18,9 +18,6 @@ class Fitness(Preprocess_Dataframe):
         self.sum_cols()
         self.fit_population()
 
-        self.log = str(datetime.now()) + '\n' + 'Fitness function established' + '\n'        
-        print(self.log)
-
 
     def sum_cols(self):
         for column in self.population:

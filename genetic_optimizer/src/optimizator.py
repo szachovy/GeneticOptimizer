@@ -20,10 +20,12 @@ class Optimizer(Fitness):
         self.log = str(datetime.now()) + '\n' + 'Fitness function established' + '\n'        
         print(self.log)
         
-        self.group_population()
+        self.population_groups = self.group_population()
 
         self.log = str(datetime.now()) + '\n' + 'Population grouped into clusters' + '\n'        
         print(self.log)
+
+        self.cluster_distances()
 
     def elbow(self):
         sum_of_squared_distances = []
@@ -64,11 +66,35 @@ class Optimizer(Fitness):
         population_groups.fit(self.fitted_population[['Chromosome', 'Total']])
 
 #        print(population_groups.labels_)
-
+#        print(population_groups.cluster_centers_)
+ 
         # plt.title('Fitted chromosomes groups')
         # plt.xlabel('Number of chromosome')
         # plt.ylabel('Total value')
         # plt.scatter(self.fitted_population['Chromosome'], self.fitted_population['Total'], c=population_groups.labels_)
+        # plt.scatter(population_groups.cluster_centers_[:,0], population_groups.cluster_centers_[:,1], marker='x')
         # plt.show()
 
-        
+        return population_groups
+
+    def cluster_distances(self):
+        centroid_dists = []
+#        print(list(self.population_groups.cluster_centers_))
+        centroids = list(self.population_groups.cluster_centers_)
+#        print(len(centroids))
+        for destination_cluster in range(len(centroids)):
+            dists = []
+            for source_cluster in range(len(centroids)):
+                if (centroids[source_cluster][0] == centroids[destination_cluster][0]) and (centroids[source_cluster][1] == centroids[destination_cluster][1]):
+                    pass
+                else:
+                    dist = math.sqrt((centroids[source_cluster][0] - centroids[destination_cluster][0])**2 + (centroids[source_cluster][1] - centroids[destination_cluster][1])**2)
+                    dists.append(dist)
+            
+            centroid_dists.append(dists)
+#            dist = math.sqrt((cluster[1][0] - cluster[0][0])**2 + (cluster[1][1] - cluster[0][1])**2)
+#            print(dist)
+
+        return centroid_dists
+
+

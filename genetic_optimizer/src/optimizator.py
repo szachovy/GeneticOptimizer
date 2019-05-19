@@ -9,6 +9,8 @@ from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import math
 from datetime import datetime
+import pandas as pd
+
 #naive bayes
 
 class Optimizer(Fitness):
@@ -25,7 +27,7 @@ class Optimizer(Fitness):
         self.log = str(datetime.now()) + '\n' + 'Population grouped into clusters' + '\n'        
         print(self.log)
 
-        self.roulette_wheel_selection()
+        self.parent_selection()
 
     def elbow(self):
         sum_of_squared_distances = []
@@ -65,7 +67,9 @@ class Optimizer(Fitness):
         population_groups = KMeans(n_clusters=self.elbow())
         population_groups.fit(self.fitted_population[['Chromosome', 'Total']])
 
-#        print(population_groups.labels_)
+#        self.fitted_population['Labels'] = population_groups.labels_
+        self.fitted_population = pd.concat([self.fitted_population, pd.Series(population_groups.labels_, name='Labels')], axis=1)
+        print(self.fitted_population)
         print(population_groups.cluster_centers_)
         
         plt.title('Fitted chromosomes groups')
@@ -103,7 +107,7 @@ class Optimizer(Fitness):
 
     def roulette_wheel_selection(self):
         centroid_dists = self.cluster_distances()
-        print(centroid_dists) 
+#        print(centroid_dists) 
         max_prob = [sum(dist) for dist in centroid_dists]
         cluster = 0
         dists = []
@@ -113,5 +117,11 @@ class Optimizer(Fitness):
                 dist.append(target / max_prob[cluster])
             cluster += 1
             dists.append(dist)
-        print(dists) 
+#        print(dists) 
+        return dists
 
+    def parent_selection(self):
+        probability = self.roulette_wheel_selection()
+        print(probability)
+        
+        

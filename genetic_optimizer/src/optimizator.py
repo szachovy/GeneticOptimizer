@@ -11,7 +11,7 @@ import math
 from datetime import datetime
 import pandas as pd
 import numpy as np
-
+import scipy.stats as stats
 # anova
 
 class Optimizer(Fitness):
@@ -124,6 +124,7 @@ class Optimizer(Fitness):
         return dists
 
     def parent_selection(self):
+        # try except somewhere here where 'Selected' will not match
         probability = self.roulette_wheel_selection()
         print(probability)
 #        print(self.fitted_population)
@@ -131,7 +132,17 @@ class Optimizer(Fitness):
         print(self.fitted_population)
         first_parent = self.fitted_population[self.fitted_population['Selected'] == False].sample(n = 1)
         print(first_parent)
-        label = np.random.choice([cluster for cluster in probability.keys()], p=probability[int(first_parent['Labels'])])
 
+        label = np.random.choice([cluster for cluster in probability.keys()], p=probability[int(first_parent['Labels'])])
         second_parent = self.fitted_population[(self.fitted_population['Selected'] == False) & (self.fitted_population['Labels'] == label)].sample(n = 1)
         print(second_parent)
+
+        F_test = stats.f_oneway(first_parent.iloc[:, 0: self.fitted_population.columns.get_loc('Total')].values[0], second_parent.iloc[:, 0: self.fitted_population.columns.get_loc('Total')].values[0])
+        print(F_test)
+        print(F_test[0])
+        print(self.population)
+#        if (float(first_parent['Total']) + float(second_parent['Total']))... and F_test > new F_test
+        
+
+
+        

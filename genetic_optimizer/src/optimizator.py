@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import math
 from datetime import datetime
 import pandas as pd
+import numpy as np
 
 # anova
 
@@ -116,6 +117,7 @@ class Optimizer(Fitness):
             for target in centroid:
                 dist.append(target / max_prob[cluster])
 
+            dist.insert(cluster, 0)
             dists[cluster] = dist
             cluster += 1
 #        print(dists) 
@@ -127,5 +129,9 @@ class Optimizer(Fitness):
 #        print(self.fitted_population)
         self.fitted_population['Selected'] = pd.Series(data=[False for row in range(self.fitted_population.shape[0])])
         print(self.fitted_population)
-        first_parent = self.fitted_population.sample(n = 1)
+        first_parent = self.fitted_population[self.fitted_population['Selected'] == False].sample(n = 1)
         print(first_parent)
+        label = np.random.choice([cluster for cluster in probability.keys()], p=probability[int(first_parent['Labels'])])
+
+        second_parent = self.fitted_population[(self.fitted_population['Selected'] == False) & (self.fitted_population['Labels'] == label)].sample(n = 1)
+        print(second_parent)

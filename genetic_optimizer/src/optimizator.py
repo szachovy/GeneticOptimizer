@@ -11,7 +11,7 @@ import math
 from datetime import datetime
 import pandas as pd
 
-#naive bayes
+# anova
 
 class Optimizer(Fitness):
     def __init__(self, file_name):
@@ -69,7 +69,7 @@ class Optimizer(Fitness):
 
 #        self.fitted_population['Labels'] = population_groups.labels_
         self.fitted_population = pd.concat([self.fitted_population, pd.Series(population_groups.labels_, name='Labels')], axis=1)
-        print(self.fitted_population)
+        
         print(population_groups.cluster_centers_)
         
         plt.title('Fitted chromosomes groups')
@@ -110,18 +110,22 @@ class Optimizer(Fitness):
 #        print(centroid_dists) 
         max_prob = [sum(dist) for dist in centroid_dists]
         cluster = 0
-        dists = []
+        dists = {}
         for centroid in centroid_dists:
             dist = []
             for target in centroid:
                 dist.append(target / max_prob[cluster])
+
+            dists[cluster] = dist
             cluster += 1
-            dists.append(dist)
 #        print(dists) 
         return dists
 
     def parent_selection(self):
         probability = self.roulette_wheel_selection()
         print(probability)
-        
-        
+#        print(self.fitted_population)
+        self.fitted_population['Selected'] = pd.Series(data=[False for row in range(self.fitted_population.shape[0])])
+        print(self.fitted_population)
+        first_parent = self.fitted_population.sample(n = 1)
+        print(first_parent)

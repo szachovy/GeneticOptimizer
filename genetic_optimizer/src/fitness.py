@@ -1,20 +1,12 @@
 
-try:
-    from preprocessing import Preprocess_Dataframe
-except ModuleNotFoundError as m:
-    from .preprocessing import Preprocess_Dataframe
-
 import numpy as np
 import pandas as pd
 
-class Fitness(Preprocess_Dataframe):
-    def __init__(self, file_name):
-        super().__init__(file_name)
-        
-        self.denominators = []            
-        self.sum_cols()
-        self.fit_population()
+class Fitness(object):
 
+    def __init__(self, population):
+        self.denominators = []            
+        self.population = population
 
     def sum_cols(self):
         for column in self.population:
@@ -23,6 +15,8 @@ class Fitness(Preprocess_Dataframe):
     def fit_population(self):
         fit_population = {}
         get_denominator = 0
+
+        self.sum_cols()
 
         for column in self.population:
             occurrences = dict(self.population[column].value_counts())

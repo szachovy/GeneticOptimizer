@@ -37,7 +37,7 @@ def check_file(opt):
     '''
     def wrapper(*args):
         try:
-            if args[1]:
+            if args[0]:
                 opt(*args)
         except IndexError as i:
             print('type file name placed in datasets directory which will be optimized, ex. Genetic_Optimizer().optimize(myfile.csv)')
@@ -65,8 +65,8 @@ class Genetic_Optimizer(Implement_Func):
         '''
 #        Preprocess_Dataframe(file_name)        
 #        Fitness(file_name)
-        Optimizer(file_name)
-#        Pipeline(file_name)
+#        Optimizer(file_name)
+        Pipeline(file_name)
 
 if __name__ == '__main__':
     gen = Genetic_Optimizer()

@@ -8,6 +8,10 @@ import platform
 import numpy as np
 
 def path_existence(PATH):
+    '''
+        Check the path existence of two main configuration files.
+        ...
+    '''
     try:
         assert(os.path.exists(PATH))
         return True

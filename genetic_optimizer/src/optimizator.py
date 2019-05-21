@@ -68,7 +68,7 @@ class Optimizer(Fitness):
         population_groups = KMeans(n_clusters=self.elbow())
         population_groups.fit(self.fitted_population[['Chromosome', 'Total']])
 
-#        self.fitted_population['Labels'] = population_groups.labels_
+#        print(self.fitted_population.sort_values(by='Total'))
         self.fitted_population = pd.concat([self.fitted_population, pd.Series(population_groups.labels_, name='Labels')], axis=1)
         
         print(population_groups.cluster_centers_)

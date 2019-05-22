@@ -17,14 +17,6 @@ class Optimizer(object):
         self.performance = performance
         self.fitted_population = fitted_population
 
-        # ----------
-        self.population_groups = self.group_population()
-        # ---------
-
-        # -----------
-        self.parent_selection()
-        # -----------
-
     def elbow(self):
         sum_of_squared_distances = []
  
@@ -67,10 +59,10 @@ class Optimizer(object):
         # plt.scatter(self.fitted_population['Chromosome'], self.fitted_population['Total'], c=population_groups.labels_)
         # plt.scatter(population_groups.cluster_centers_[:,0], population_groups.cluster_centers_[:,1], marker='x')
         # plt.show()
-
         return population_groups
 
-    def change_order(self, population_groups):
+    @staticmethod
+    def change_order(population_groups):
         order = {}
         pivot_order = {}
         new_order = []
@@ -85,9 +77,10 @@ class Optimizer(object):
             
         return new_order
 
-    def cluster_distances(self):
+    @staticmethod
+    def cluster_distances(population_groups):
         centroid_dists = []
-        centroids = list(self.population_groups.cluster_centers_)
+        centroids = list(population_groups.cluster_centers_)
 
         centroids.sort(key=lambda x: x[1])
 
@@ -104,12 +97,13 @@ class Optimizer(object):
 
         return centroid_dists
 
-    def roulette_wheel_selection(self):
-        centroid_dists = self.cluster_distances()
+
+    def roulette_wheel_selection(self, population_groups):
+        centroid_dists = self.cluster_distances(population_groups)
 
         max_prob = [sum(dist) for dist in centroid_dists]
         cluster = 0
-        dists = {}
+        probability = {}
 
         for centroid in centroid_dists:
             dist = []
@@ -117,31 +111,65 @@ class Optimizer(object):
                 dist.append(target / max_prob[cluster])
 
             dist.insert(cluster, 0)
-            dists[cluster] = dist
+            probability[cluster] = dist
             cluster += 1
 
-        return dists
+        return probability
 
-    def parent_selection(self):
-        # try except somewhere here where 'Selected' will not match
-        probability = self.roulette_wheel_selection()
+    def parent_selection(self, population_groups, population):
+        probability = self.roulette_wheel_selection(population_groups)
+        print(probability)
 
         self.fitted_population['Selected'] = pd.Series(data=[False for row in range(self.fitted_population.shape[0])])
         print(self.fitted_population)
 
-        first_parent = self.fitted_population[self.fitted_population['Selected'] == False].sample(n = 1)
-        print(first_parent)
+        while (sum(self.fitted_population.iloc(self.fitted_population['Selected'] == True)) / self.fitted_population.shape[0]) > self.performance['shuffle_scale']:
+            first_parent = self.fitted_population[self.fitted_population['Selected'] == False].sample(n = 1)
+            print(first_parent)
 
-        label = np.random.choice([cluster for cluster in probability.keys()], p=probability[int(first_parent['Labels'])])
-        second_parent = self.fitted_population[(self.fitted_population['Selected'] == False) & (self.fitted_population['Labels'] == label)].sample(n = 1)
-        print(second_parent)
-
-        F_test = stats.f_oneway(first_parent.iloc[:, 0: self.fitted_population.columns.get_loc('Total')].values[0], second_parent.iloc[:, 0: self.fitted_population.columns.get_loc('Total')].values[0])
-        print(F_test)
-        print(F_test[0])
-        print(self.fitted_population)
-#        if (float(first_parent['Total']) + float(second_parent['Total']))... and F_test > new F_test
+            label = np.random.choice([cluster for cluster in probability.keys()], p=probability[int(first_parent['Labels'])])
+            second_parent = self.fitted_population[(self.fitted_population['Selected'] == False) & (self.fitted_population['Labels'] == label)].sample(n = 1)
+            print(second_parent)
         
+            print(self.fitted_population['Total'].loc[self.fitted_population['Labels'].isin(first_parent['Labels'])])
+            print(self.fitted_population['Total'].loc[self.fitted_population['Labels'].isin(second_parent['Labels'])])
 
+            F_test = stats.f_oneway(self.fitted_population['Total'].loc[self.fitted_population['Labels'].isin(first_parent['Labels'])], self.fitted_population['Total'].loc[self.fitted_population['Labels'].isin(second_parent['Labels'])])
+    #        F_test = stats.f_oneway(first_parent.iloc[:, 0: self.fitted_population.columns.get_loc('Total')].values[0], second_parent.iloc[:, 0: self.fitted_population.columns.get_loc('Total')].values[0])
+            print(F_test)
+            print(F_test[0])
+        
+            child = {}
+            for column in range(self.fitted_population.columns.get_loc('Total')):
+                child[column] = [(max(first_parent[column], second_parent[column]))]
+
+            child['Total'] = sum([column for column in child.values()])
+            
+            worse_parent_total = min(first_parent['Total'], second_parent['Total'])
+            better_parent_total = max(first_parent['Total'], second_parent['Total'])
+            
+            if (better_parent_total + worse_parent_total) < (better_parent_total + child['Total']) * self.performance['variety']:
+                if first_parent['Labels'] > second_parent['Labels']:
+                    child['Chromosome'] = second_parent['Chromosome']
+                else:
+                    child['Chromosome'] = first_parent['Chromosome']
+
+                child['Labels'] = min(first_parent['Labels'], second_parent['Labels'])
+                child['Selected'] = True
+
+                child_F_test = stats.f_oneway(self.fitted_population['Total'].loc[self.fitted_population['Labels'].isin(max(first_parent['Labels'], second_parent['Labels']))], self.fitted_population['Total'].loc[self.fitted_population['Labels'].isin(child['Labels'])])
+            
+                if F_test[0] > child_F_test[0]:
+                    for column in range(self.fitted_population.columns.get_loc('Total')):
+                        if child[column] == first_parent[column]:
+                            population.get_value(self.fitted_population['Chromosome'].loc[self.fitted_population['Total'] == worse_parent_total], column) = population.get_value(self.fitted_population['Chromosome'].loc[...], column)
+                        else:
+                            population.get_value(self.fitted_population['Chromosome'].loc[self.fitted_population['Total'] == worse_parent_total], column) = population.get_value(self.fitted_population['Chromosome'].loc[...], column)
+
+                    place = self.fitted_population['Chromosome'].loc[self.fitted_population['Total'] == (min(first_parent['Total'], second_parent['Total']))] 
+                    self.fitted_population.loc[place] = child
+                    self.fitted_population.drop(self.fitted_population.loc[place += 1])                        
+
+        return population
 
         

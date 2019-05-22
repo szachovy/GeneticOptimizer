@@ -29,4 +29,14 @@ class Pipeline(object):
         print(str(datetime.now()) + "\n" + "Population fitted correctly\n")
 
         #optimizer
-        Optimizer(self.config.performance(), self.fitted_population)          
+        self.new_population = Optimizer(self.config.performance(), self.fitted_population)
+
+        # group population
+        groups = self.new_population.group_population()
+        print(str(datetime.now()) + "\n" + "Population grouped into clusters\n")
+#        print(groups)
+#        print(groups.labels_)
+#        print(groups.cluster_centers_)
+        # select parent
+        self.new_population.parent_selection(groups, self.population)
+        

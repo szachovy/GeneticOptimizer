@@ -69,9 +69,9 @@ class Main_Configuration(object):
         miniter = float(self.config.get('PERFORMANCE', 'MINITER'))
         maxiter = float(self.config.get('PERFORMANCE', 'MAXITER'))
         chromosome_weight = float(self.config.get('PERFORMANCE', 'CHROMOSOMELAYERWEIGHT'))
+        variety = float(self.config.get('PERFORMANCE', 'VARIETY'))
 
-
-        if (shuffle_scale) not in np.arange(0, 2, 0.01):
+        if (shuffle_scale or variety) not in np.arange(0, 2, 0.01):
             raise Exception('Sum of crossover probability and mutation probability must be in range from 0 to 1 (0% - 100%)')
         
         elif (miniter or maxiter or chromosome_weight) < 0:
@@ -81,7 +81,7 @@ class Main_Configuration(object):
             raise Exception('Minimum number of iterations cannot be greater number than maximun number of iterations')
 
         else:
-            getperformance = {'min' : miniter, 'max' : maxiter, 'shuffle_scale' : shuffle_scale , 'chromosome_weight' : chromosome_weight}
+            getperformance = {'min' : miniter, 'max' : maxiter, 'shuffle_scale' : shuffle_scale , 'chromosome_weight' : chromosome_weight, 'variety': variety}
             return getperformance
 
     def input_loc(self):

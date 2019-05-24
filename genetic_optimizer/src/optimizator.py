@@ -8,7 +8,6 @@ import math
 import pandas as pd
 import numpy as np
 import operator
-# anova
 
 class Optimizer(object):
 
@@ -136,8 +135,8 @@ class Optimizer(object):
         print(self.fitted_population['Total'].loc[self.fitted_population['Labels'].isin(second_parent['Labels'])])
         F_test = stats.f_oneway(first_parent.iloc[:, 0: self.fitted_population.columns.get_loc('Total')].values[0], second_parent.iloc[:, 0: self.fitted_population.columns.get_loc('Total')].values[0]) 
         #F_test = stats.f_oneway(self.fitted_population['Total'].loc[self.fitted_population['Labels'].isin(first_parent['Labels'])], self.fitted_population['Total'].loc[self.fitted_population['Labels'].isin(second_parent['Labels'])])
-        print(F_test)
-        print(F_test[0])
+
+ 
         
         child = {}
         for column in range(self.fitted_population.columns.get_loc('Total')):
@@ -147,26 +146,48 @@ class Optimizer(object):
 
         worse_parent_total = min(float(first_parent['Total']), float(second_parent['Total']))
         better_parent_total = max(float(first_parent['Total']), float(second_parent['Total']))
-        print(worse_parent_total)
-        print(better_parent_total)
 
-        if (better_parent_total + worse_parent_total) < (better_parent_total + child['Total']) * self.performance['variety']:
-            parent_survived = None
-            if int(first_parent['Labels']) > int(second_parent['Labels']):
-                child['Chromosome'] = [int(second_parent['Chromosome'])]
-                parent_survived = first_parent
-            else:
-                child['Chromosome'] = [int(first_parent['Chromosome'])]
-                parent_survided = second_parent
+        parent_survived = first_parent if int(first_parent['Labels']) > int(second_parent['Labels']) else second_parent
 
-            child['Labels'] = [min(int(first_parent['Labels']), int(second_parent['Labels']))]
-            child['Selected'] = [True]
-            child = pd.DataFrame.from_dict(child)
-            print(child)       
-            child_F_test = stats.f_oneway(child.iloc[:, 0: self.fitted_population.columns.get_loc('Total')].values[0], parent_survived.iloc[:, 0: self.fitted_population.columns.get_loc('Total')].values[0])
-#            child_F_test = stats.f_oneway(self.fitted_population['Total'].loc[self.fitted_population['Labels'] == child['Labels']], self.fitted_population['Total'].loc[self.fitted_population['Labels'] == max(int(first_parent['Labels']), int(second_parent['Labels']))])
-#            print(child_F_test)
-#            print(child_F_test[0])        
+        child = pd.DataFrame.from_dict(child)
+        print(child)
+        child_F_test = stats.f_oneway(child.iloc[:, 0: self.fitted_population.columns.get_loc('Total')].values[0], parent_survived.iloc[:, 0: self.fitted_population.columns.get_loc('Total')].values[0])
+        print(F_test[0])
+        print(child_F_test[0])
+
+        print(better_parent_total + worse_parent_total)
+        print(better_parent_total + float(child['Total']) * self.performance['variety'])
+
+        child = pd.concat([child, pd.Series(int(second_parent['Chromosome']) if int(first_parent['Labels']) > int(second_parent['Labels']) else int(first_parent['Chromosome']), name='Chromosome'), pd.Series(min(int(first_parent['Labels']), int(second_parent['Labels'])), name='Labels'), pd.Series(True, name='Selected')], axis=1)        
+        get_worse_parent_index = int(self.fitted_population['Chromosome'].loc[int(first_parent['Chromosome']) if float(first_parent['Total']) == worse_parent_total else int(second_parent['Chromosome'])])
+        print(child)
+#        self.fitted_population = pd.concat([self.fitted_population, child]).drop_duplicates(keep='last').sort_values('Chromosome')
+        self.fitted_population.set_index('Chromosome')
+        self.fitted_population.update(child.set_index('Chromosome'))
+        self.fitted_population.reset_index()
+#        self.fitted_population.loc[[get_worse_parent_index]] = child
+        
+#        self.fitted_population.drop(labels=[get_worse_parent_index], inplace=True)
+        #place = self.fitted_population['Chromosome'].loc[int(first_parent['Chromosome']) if float(first_parent['Total']) == worse_parent_total else int(second_parent['Chromosome'])]
+        #self.fitted_population[place] = child
+        print(self.fitted_population)
+
+#        if (child_F_test[0] != 0) and (F_test[0] > child_F_test[0]) and ((better_parent_total + worse_parent_total) < (better_parent_total + float(child['Total'])) * self.performance['variety']):
+#            print('weszlo')
+            # child = pd.concat([child, pd.Series(int(second_parent['Chromosome']) if int(first_parent['Labels']) > int(second_parent['Labels']) else int(first_parent['Chromosome']), name='Chromosome'), pd.Series(min(int(first_parent['Labels']), int(second_parent['Labels'])), name='Labels'), pd.Series(True, name='Selected')], axis=1)
+            # place = self.fitted_population['Chromosome'].loc[int(first_parent['Chromosome']) if float(first_parent['Total']) == worse_parent_total else int(second_parent['Chromosome'])]
+# 
+        # 
+            # self.fitted_population[place] = child
+            # print(self.fitted_population)
+#            place += 1
+#            self.fitted_population.drop(self.fitted_population.loc[place])
+#            print(self.fitted_population)
+            
+#            -----------------
+#            child_F_test = stats.f_oneway(self.fitted_population['Total'].loc[self.fitted_population['Labels'] == child['Labels']], self.fitted_population['Total'].loc[self.fitted_population['Labels'] == max(int(first_parent['Labels']), int(second_parent['Labels']))])        
+                
+
         # while (sum(self.fitted_population.iloc(self.fitted_population['Selected'] == True)) / self.fitted_population.shape[0]) > self.performance['shuffle_scale']:
             # first_parent = self.fitted_population[self.fitted_population['Selected'] == False].sample(n = 1)
             # print(first_parent)

@@ -106,12 +106,6 @@ class Main_Configuration(object):
                 return True
         return False
 
-    def timestamp(self):
-        if bool(self.config.get('SYSTEM', 'SETTIMESTAMP')):
-            return True
-        else:
-            return False
-
     # i`ll do it later
     def server(self):
         if bool(self.config.get('SERVER', 'ACTIVE')):

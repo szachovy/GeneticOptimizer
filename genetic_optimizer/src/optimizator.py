@@ -171,7 +171,13 @@ class Optimizer(object):
         #place = self.fitted_population['Chromosome'].loc[int(first_parent['Chromosome']) if float(first_parent['Total']) == worse_parent_total else int(second_parent['Chromosome'])]
         #self.fitted_population[place] = child
         print(self.fitted_population)
+        print(population)
 
+        for gene in range(population.shape[1]):
+            population.loc[int(child['Chromosome'])][gene] = max(population.loc[int(first_parent['Chromosome'])][gene], population.loc[int(second_parent['Chromosome'])][gene])
+
+        print(population.loc[int(child['Chromosome'])])
+        print(population)
 #        if (child_F_test[0] != 0) and (F_test[0] > child_F_test[0]) and ((better_parent_total + worse_parent_total) < (better_parent_total + float(child['Total'])) * self.performance['variety']):
 #            print('weszlo')
             # child = pd.concat([child, pd.Series(int(second_parent['Chromosome']) if int(first_parent['Labels']) > int(second_parent['Labels']) else int(first_parent['Chromosome']), name='Chromosome'), pd.Series(min(int(first_parent['Labels']), int(second_parent['Labels'])), name='Labels'), pd.Series(True, name='Selected')], axis=1)

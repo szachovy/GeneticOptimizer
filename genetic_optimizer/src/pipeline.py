@@ -41,10 +41,8 @@ class Pipeline(object):
 #        print(groups.cluster_centers_)
 
         # select parent
-        print(self.population)
         self.population = self.new_population.next_generation(groups, self.population)
         print(str(datetime.now()) + "\n" + "Generated {} generation of population".format(1))
-        print(self.population)
         # test accurracy
         #------------
 

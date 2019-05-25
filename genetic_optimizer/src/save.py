@@ -1,29 +1,67 @@
 
+try:
+    from optimizator import Optimizer
+    from fitness import Fitness
+except ModuleNotFoundError as m:
+    from .optimizator import Optimizer
+    from .fitness import Fitness
+
 import logging
 
 class Save(object):
-    #@property
-    #@setter
-    #output loc conf getfiles['filename'] getfiles['figname']
-    #return population if provided
-    #return logfile if provided
-    #return fig if provided
-    def __init__(self, config, duration, generations):
+
+    def __init__(self, file_name, config, start, stop, generations, performance):
+        self.file_name = file_name
         self.config = config
-        self.duration = duration
+        self.duration = stop - start
         self.generations = generations
+        self.start = start
+        self.stop = stop
+        self.performance = performance
+        
 
     @property
     def save_population(self):
-        if self.saved == True:
-            return 'Population saved'
+        if self.saved:
+            return 'Check results directory to see optimizer results'
         else:
-            raise Exception('Errors occured during saving population, check your output options in STANDARDS.conf')
+            raise 'None of saving options provided in STANDARDS.conf'
 
     @save_population.setter
     def save_population(self, population):        
-        getfiles = self.config.output_loc()
-#        if getfiles['file_name'] 
-#        population
+        get_files = self.config.output_loc()
+        
+        if any(get_files.values()):
+            if get_files['file_name']:
+                extension = get_files['file_name'].split(".")
 
-        self.saved = True
+                if extension[-1] == 'csv':
+                    population.to_csv(get_files['file_name'])
+                elif extension[-1] == 'xlsx':
+                    population.to_excel(get_files['file_name'])
+                elif extension[-1] == 'json':
+                    population.to_json(get_files['file_name'])  
+                else:
+                    print('Wrong extension of saving file provided, unable to save')
+                    exit(0)
+
+            if get_files['fig_name']:
+                Optimizer(self.config.performance(), Fitness(population).fit_population()).group_population(save=True, file_name=get_files['fig_name'])
+
+            if get_files['log_name']:
+                logging.basicConfig(level = logging.INFO, filename = get_files['log_name'])
+                logging.info('Population optimized : ' + self.file_name) 
+                logging.info('Optimizer started up at : ' + str(self.start)) 
+                logging.info('Optimizer ended up at : ' + str(self.stop)) 
+                logging.info('Total time of optimizer activity : ' + str(self.stop - self.start))  
+                logging.info('Number of generations produced : ' + str(self.generations))
+                perform = ""
+                for key, val in enumerate(self.performance):
+                    perform += str(key) + " -> " + str(val)
+
+                logging.info('Performance settings during optimization : ' + perform) 
+
+            self.saved = True
+
+        else:
+            self.saved = False

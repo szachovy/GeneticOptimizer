@@ -85,7 +85,7 @@ class Main_Configuration(object):
 
     def output_loc(self):
         if dir_existence(self.out_dir):
-            getfiles = {'file_name' : None, 'fig_name' : None}
+            getfiles = {'file_name' : False, 'fig_name' : False, 'log_name' : False}
 
             if bool(self.config.get('OUTPUTLOCATION', 'DOOUT')):
                 getfiles['file_name'] = str(self.out_dir + self.config.get('OUTPUTLOCATION', 'OUTNAME') + '.' + self.config.get('OUTPUTLOCATION', 'OUTFORMAT'))
@@ -93,13 +93,10 @@ class Main_Configuration(object):
             if bool(self.config.get('OUTPUTLOCATION', 'DOFIG')):
                 getfiles['fig_name'] = str(self.out_dir + self.config.get('OUTPUTLOCATION', 'FIGNAME') + '.' + self.config.get('OUTPUTLOCATION', 'FIGFORMAT'))
 
-            return getfiles
+            if bool(self.config.get('OUTPUTLOCATION', 'DOLOG')):
+                getfiles['log_name'] = str(self.out_dir + self.config.get('OUTPUTLOCATION', 'LOGNAME') + '.' + self.config.get('OUTPUTLOCATION', 'LOGFORMAT'))
 
-    def log_file(self):
-        if dir_existence(self.out_dir):
-            if bool(self.config.get('SYSTEM', 'LOGFILE')):
-                return True
-        return False
+            return getfiles
 
     # i`ll do it later
     def server(self):

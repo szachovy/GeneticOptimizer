@@ -21,13 +21,14 @@ class Pipeline(object):
         self.performance = self.config.performance()
         
         start = datetime.now()
-
+        
         #preprocessing
         self.population = Preprocess_Dataframe(file_name, self.config).get_file()
         print(str(datetime.now()) + "\n" + "File found and cleaned properly")
 
         self.generation = 0
-        while self.generation != self.performance['iter']:                
+        while self.generation != self.performance['iter']:  
+               
             #fitness
             self.fitted_population = Fitness(self.population).fit_population()
             print(str(datetime.now()) + "\n" + "Population {} fitted correctly".format(self.generation))
@@ -47,10 +48,10 @@ class Pipeline(object):
 
         stop = datetime.now()
         print(str(datetime.now()) + "\n" + "Population optimized without any errors")
-        print("Total time measure of optimizer activity : " + str(stop - start))   
+        print("Total time of optimizer activity : " + str(stop - start))   
 
         #save
-        save = Save(self.config, (stop - start), self.generation)
+        save = Save(file_name, self.config, start, stop, self.generation, self.performance)
         save.save_population = self.population
         print(save.save_population)
         

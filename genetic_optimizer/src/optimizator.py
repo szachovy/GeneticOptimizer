@@ -44,7 +44,7 @@ class Optimizer(object):
         
         return distance.index(max(distance))
                     
-    def group_population(self):
+    def group_population(self, save=False, file_name=False):
         self.fitted_population['Chromosome'] = self.fitted_population['Chromosome'] * self.performance['chromosome_weight']
 
         population_groups = KMeans(n_clusters=self.elbow())
@@ -52,13 +52,17 @@ class Optimizer(object):
 
         self.fitted_population = pd.concat([self.fitted_population, pd.Series(self.change_order(population_groups), name='Labels')], axis=1)
         
-        # plt.title('Fitted chromosomes groups')
-        # plt.xlabel('Number of chromosome')
-        # plt.ylabel('Total value')
-        # plt.scatter(self.fitted_population['Chromosome'], self.fitted_population['Total'], c=population_groups.labels_)
-        # plt.scatter(population_groups.cluster_centers_[:,0], population_groups.cluster_centers_[:,1], marker='x')
-        # plt.show()
-        return population_groups
+        if (save and file_name):
+            plt.title('Fitted chromosomes groups')
+            plt.xlabel('Number of chromosome')
+            plt.ylabel('Total value')
+            plt.scatter(self.fitted_population['Chromosome'], self.fitted_population['Total'], c=population_groups.labels_)
+            plt.scatter(population_groups.cluster_centers_[:,0], population_groups.cluster_centers_[:,1], marker='x')
+#            plt.show()
+            plt.savefig(file_name)
+
+        else:
+            return population_groups
 
     @staticmethod
     def change_order(population_groups):

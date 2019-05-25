@@ -10,8 +10,8 @@ from Generator.generator import Generator
 from src.preprocessing import Preprocess_Dataframe
 from src.fitness import Fitness
 from src.optimizator import Optimizer
+from src.save import Save
 
-import timeit
 from configparser import ConfigParser
 import inspect
 

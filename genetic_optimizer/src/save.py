@@ -8,4 +8,7 @@ class Save(object):
     #return population
     #return logfile if provided
     #return fig if provided
+    def save_population(self)
+    def save_population(self):
+        
     pass

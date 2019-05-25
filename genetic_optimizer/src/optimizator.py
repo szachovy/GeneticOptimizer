@@ -122,6 +122,8 @@ class Optimizer(object):
         self.fitted_population['Selected'] = pd.Series(data=[False for row in range(self.fitted_population.shape[0])])
 
         try:
+            similarity = 0
+
             while ((self.fitted_population['Selected'] == True).sum() / self.fitted_population.shape[0]) < self.performance['shuffle_scale']:
                 first_parent = self.fitted_population[self.fitted_population['Selected'] == False].sample(n = 1)
                 label = np.random.choice([cluster for cluster in probability.keys()], p=probability[int(first_parent['Labels'])])
@@ -152,9 +154,16 @@ class Optimizer(object):
                     self.fitted_population.update(child.set_index('Chromosome'))
                     self.fitted_population.reset_index()
 
+                    print(self.fitted_population)
                     for gene in range(population.shape[1]):
                         population.loc[int(child['Chromosome'])][gene] = max(population.loc[int(first_parent['Chromosome'])][gene], population.loc[int(second_parent['Chromosome'])][gene])
-                                
+
+                else:
+                    if similarity > self.fitted_population.shape[0] * (1 - self.performance['variety']):
+                        return population
+                    else:
+                        similarity += 1            
+
             return population
         
         except ValueError as v:

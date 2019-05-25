@@ -15,11 +15,12 @@ except ModuleNotFoundError as m:
 
 from datetime import datetime
 
-
 class Pipeline(object):
     def __init__(self, file_name):
         self.config = Main_Configuration()
         self.performance = self.config.performance()
+        
+        start = datetime.now()
 
         #preprocessing
         self.population = Preprocess_Dataframe(file_name, self.config).get_file()
@@ -29,7 +30,7 @@ class Pipeline(object):
         while self.generation != self.performance['iter']:                
             #fitness
             self.fitted_population = Fitness(self.population).fit_population()
-            print(str(datetime.now()) + "\n" + "Population fitted correctly")
+            print(str(datetime.now()) + "\n" + "Population {} fitted correctly".format(self.generation))
             print(self.fitted_population)
 
             #optimizer
@@ -37,15 +38,21 @@ class Pipeline(object):
     
             # group population
             groups = self.new_population.group_population()
-            print(str(datetime.now()) + "\n" + "Population grouped into clusters")
+            print(str(datetime.now()) + "\n" + "Population {} grouped into clusters".format(self.generation))
 
             # select parent
             self.population = self.new_population.next_generation(groups, self.population)
             print(str(datetime.now()) + "\n" + "Generated {} generation of population".format(self.generation))
             self.generation += 1
-        print(self.population)
+
+        stop = datetime.now()
+        print(str(datetime.now()) + "\n" + "Population optimized without any errors")
+        print("Total time measure of optimizer activity : " + str(stop - start))   
+
         #save
-        #-------------
+        save = Save(self.config, (stop - start), self.generation)
+        save.save_population = self.population
+        print(save.save_population)
         
 
         

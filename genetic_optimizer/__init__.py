@@ -7,10 +7,6 @@ from src.meta import Implement_Func
 from src.conf_handler import Load_Configuration
 from src.pipeline import Pipeline
 from Generator.generator import Generator
-# from src.preprocessing import Preprocess_Dataframe
-# from src.fitness import Fitness
-# from src.optimizator import Optimizer
-# from src.save import Save
 
 from configparser import ConfigParser
 import inspect
@@ -35,9 +31,9 @@ def check_file(opt):
         Raise exception if user do not provide input data set,
         which will be optimized.
     '''
-    def wrapper(*args):
+    def wrapper(*args, **kwargs):
         try:
-            if args[0]:
+            if args[0]:                     
                 opt(*args)
         except IndexError as i:
             print('Pandas DataFrame or file are not passed into function parameter during optimization')
@@ -51,7 +47,7 @@ class Genetic_Optimizer(Implement_Func):
     '''
     @staticmethod
     @load_config
-    def generate(population_size : str, chromosome_size : str, equal_chromosomes : str, initialization_method : str, representation : str, saving_method : str):
+    def generate(population_size, chromosome_size, equal_chromosomes, initialization_method, representation, saving_method):
         '''
             ...
         '''
@@ -59,14 +55,14 @@ class Genetic_Optimizer(Implement_Func):
     
     @staticmethod
     @check_file
-    def optimize(file_name):
+    def optimize(file_name, iterations=None, shuffle_scale=None, variety=None, chromosome_weight=None):
         '''
             ...
         '''
-        Pipeline(file_name)
+        Pipeline(file_name, iterations, shuffle_scale, variety, chromosome_weight)
 
 if __name__ == '__main__':
     gen = Genetic_Optimizer()
 #    gen.generate()
-    gen.optimize('bineq.csv')
+    gen.optimize('bineq.csv', 5, 0.6, 0.8)
     

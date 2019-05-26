@@ -13,14 +13,14 @@ REQUIRES_PYTHON = '>=3.6.5'
 VERSION = '1.0'
 
 REQUIRED = [
-    python>=3.6.5
-    pytest>=4.4.1
-    configparser>=3.7.4
-    numpy>=1.16.3
-    pandas>=0.24.2
-    xlsxwriter>=1.1.18
-    sklearn>=0.0
-    scipy>=1.3.0
+    'python>=3.6.0',
+    'pytest>=4.4.1',
+    'configparser>=3.7.4',
+    'numpy>=1.16.3',
+    'pandas>=0.24.2',
+    'xlsxwriter>=1.1.18',
+    'sklearn>=0.0',
+    'scipy>=1.3.0'
 ]
 
 def readme():

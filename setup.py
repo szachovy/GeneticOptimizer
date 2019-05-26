@@ -1,33 +1,55 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from setuptools import setup
 
+# Package meta-data.
+NAME = 'genetic_optimizer'
+DESCRIPTION = 'Genetic algorithm optimizer using K-Means clustering with one way ANOVA algorithms.'
+URL = 'https://github.com/szachovy/GeneticOptimizer'
+EMAIL = 'wjmaj98@gmail.com'
+AUTHOR = 'WJ Maj'
+REQUIRES_PYTHON = '>=3.6.5'
+VERSION = '1.0'
+
+REQUIRED = [
+    python>=3.6.5
+    pytest>=4.4.1
+    configparser>=3.7.4
+    numpy>=1.16.3
+    pandas>=0.24.2
+    xlsxwriter>=1.1.18
+    sklearn>=0.0
+    scipy>=1.3.0
+]
 
 def readme():
     with open('README.md') as f:
         return f.read()
 
+setup(
+    name=NAME,
+    version=VERSION,
 
-setup(name='genetic_optimizer',
-      version='1.0',
-      description='...',
-      long_description=readme(),
-      classifiers=[
-        'Development Status :: Active',
+    description=DESCRIPTION,
+    long_description=readme(),
+    long_description_content_type='text/markdown',
+
+    author=AUTHOR,
+    author_email=EMAIL,
+    python_requires=REQUIRES_PYTHON,
+    url=URL,
+    packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
+    install_requires=REQUIRED,
+    include_package_data=True,
+    license='MIT',
+    classifiers=[
+        # Trove classifiers
         'License :: OSI Approved :: MIT License',
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Science/Research',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
-#        'Topic :: Text Processing :: Linguistic',
-      ],
-      keywords='...',
-      url='https://github.com/szachovy/GeneticOptimizer',
-      author='WJ Maj',
-      license='MIT',
-      packages=['genetic_optimizer'],
-      install_requires=[
-          '...',
-      ],
-#      test_suite='nose.collector',
-#      tests_require=['nose', 'nose-cover3'],
-      entry_points={
-#          'console_scripts': ['funniest-joke=funniest.command_line:main'],
-      },
-      include_package_data=True,
-      zip_safe=False)
+    ]
+)

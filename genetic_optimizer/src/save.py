@@ -56,8 +56,8 @@ class Save(object):
                 logging.info('Total time of optimizer activity : ' + str(self.stop - self.start))  
                 logging.info('Number of generations produced : ' + str(self.generations))
                 perform = ""
-                for key, val in enumerate(self.performance):
-                    perform += str(key) + " -> " + str(val)
+                for key, val in self.performance.items():
+                    perform += "\n" + str(key) + " -> " + str(val) 
 
                 logging.info('Performance settings during optimization : ' + perform) 
 

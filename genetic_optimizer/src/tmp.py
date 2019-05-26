@@ -4,12 +4,17 @@
 #print(sum([sum(v) for v in a.values()]))
 #print(sum(a.values()))
 
-d = {'a': 1, 'b': 2}
+def elsweyr():
+    return 1
+
+d = {'a': elsweyr(), 'b': 2}
 
 p = "->"
 
-for k,v in enumerate(d):
-    p += str(k) + ' -> ' + str(v)
+for k,v in d.items():
+    print(k)
+    print(v)
+#    p += str(k) + ' -> ' + str(v)
 
 
-print(p)
+#print(p)

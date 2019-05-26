@@ -1,4 +1,6 @@
 
+__author__ = 'WJ Maj'
+
 import pandas as pd
 import numpy as np
 
@@ -23,7 +25,7 @@ class Preprocess_Dataframe(object):
         elif extension[-1] == 'json':
             self.population = pd.read_json('{}{}'.format(self.config.input_loc(), self.file_name, header=None))
         else:
-            raise Exception('Invalid file name extension')     
+            self.population = pd.DataFrame(data=file_name)     
 
         self.drop_unnamed()
         self.check_types()

@@ -7,10 +7,10 @@ from src.meta import Implement_Func
 from src.conf_handler import Load_Configuration
 from src.pipeline import Pipeline
 from Generator.generator import Generator
-from src.preprocessing import Preprocess_Dataframe
-from src.fitness import Fitness
-from src.optimizator import Optimizer
-from src.save import Save
+# from src.preprocessing import Preprocess_Dataframe
+# from src.fitness import Fitness
+# from src.optimizator import Optimizer
+# from src.save import Save
 
 from configparser import ConfigParser
 import inspect
@@ -40,7 +40,7 @@ def check_file(opt):
             if args[0]:
                 opt(*args)
         except IndexError as i:
-            print('type file name placed in datasets directory which will be optimized, ex. Genetic_Optimizer().optimize(myfile.csv)')
+            print('Pandas DataFrame or file are not passed into function parameter during optimization')
     return wrapper
 
 
@@ -59,13 +59,10 @@ class Genetic_Optimizer(Implement_Func):
     
     @staticmethod
     @check_file
-    def optimize(file_name : str):
+    def optimize(file_name):
         '''
             ...
         '''
-#        Preprocess_Dataframe(file_name)        
-#        Fitness(file_name)
-#        Optimizer(file_name)
         Pipeline(file_name)
 
 if __name__ == '__main__':

@@ -1,4 +1,6 @@
 
+__author__ = 'WJ Maj'
+
 from sklearn.cluster import KMeans
 import scipy.stats as stats
 
@@ -51,6 +53,14 @@ class Optimizer(object):
         population_groups.fit(self.fitted_population[['Chromosome', 'Total']])
 
         self.fitted_population = pd.concat([self.fitted_population, pd.Series(self.change_order(population_groups), name='Labels')], axis=1)
+
+        # plt.title('Fitted chromosomes groups')
+        # plt.xlabel('Number of chromosome')
+        # plt.ylabel('Total value')
+        # plt.scatter(self.fitted_population['Chromosome'], self.fitted_population['Total'], c=population_groups.labels_)
+        # plt.scatter(population_groups.cluster_centers_[:,0], population_groups.cluster_centers_[:,1], marker='x')
+        # plt.show()
+
         
         if (save and file_name):
             plt.title('Fitted chromosomes groups')
@@ -79,6 +89,8 @@ class Optimizer(object):
             new_order.append(pivot_order.index(int(label)))
             
         return new_order
+
+# ---------------------------------------------------------------------------------
 
     @staticmethod
     def cluster_distances(population_groups):
@@ -129,38 +141,27 @@ class Optimizer(object):
             similarity = 0
 
             while ((self.fitted_population['Selected'] == True).sum() / self.fitted_population.shape[0]) < self.performance['shuffle_scale']:
-                first_parent = self.fitted_population[self.fitted_population['Selected'] == False].sample(n = 1)
-                label = np.random.choice([cluster for cluster in probability.keys()], p=probability[int(first_parent['Labels'])])
-                second_parent = self.fitted_population[(self.fitted_population['Selected'] == False) & (self.fitted_population['Labels'] == label)].sample(n = 1)
+                first_parent = self.choose_first_parent()
+                second_parent = self.choose_second_parent(probability, first_parent)
     
                 F_test = stats.f_oneway(first_parent.iloc[:, 0: self.fitted_population.columns.get_loc('Total')].values[0], second_parent.iloc[:, 0: self.fitted_population.columns.get_loc('Total')].values[0])
-            
-                child = {}
-    
-                for column in range(self.fitted_population.columns.get_loc('Total')):
-                    child[column] = [(max(float(first_parent[column]), float(second_parent[column])))]
-            
-                child['Total'] = sum([sum(value) for value in child.values()])
     
                 worse_parent_total = min(float(first_parent['Total']), float(second_parent['Total']))
                 better_parent_total = max(float(first_parent['Total']), float(second_parent['Total']))
     
                 parent_survived = first_parent if int(first_parent['Labels']) > int(second_parent['Labels']) else second_parent
     
-                child = pd.DataFrame.from_dict(child)
+                child = self.child(first_parent, second_parent)
                 child_F_test = stats.f_oneway(child.iloc[:, 0: self.fitted_population.columns.get_loc('Total')].values[0], parent_survived.iloc[:, 0: self.fitted_population.columns.get_loc('Total')].values[0])
     
                 if (child_F_test[0] != 0) and (F_test[0] > child_F_test[0]) and ((better_parent_total + worse_parent_total) < (better_parent_total + float(child['Total'])) * self.performance['variety']):
-                    child = pd.concat([child, pd.Series(int(second_parent['Chromosome']) if int(first_parent['Labels']) > int(second_parent['Labels']) else int(first_parent['Chromosome']), name='Chromosome'), pd.Series(min(int(first_parent['Labels']), int(second_parent['Labels'])), name='Labels'), pd.Series(True, name='Selected')], axis=1)
     
+                    child = pd.concat([child, pd.Series(int(second_parent['Chromosome']) if int(first_parent['Labels']) > int(second_parent['Labels']) else int(first_parent['Chromosome']), name='Chromosome'), pd.Series(min(int(first_parent['Labels']), int(second_parent['Labels'])), name='Labels'), pd.Series(True, name='Selected')], axis=1)
 
-                    self.fitted_population.set_index('Chromosome')
-                    self.fitted_population.update(child.set_index('Chromosome'))
-                    self.fitted_population.reset_index()
+                    self.update_fitted_population(child)
+                    population = self.update_population(population, child, first_parent, second_parent)
 
                     print(self.fitted_population)
-                    for gene in range(population.shape[1]):
-                        population.loc[int(child['Chromosome'])][gene] = max(population.loc[int(first_parent['Chromosome'])][gene], population.loc[int(second_parent['Chromosome'])][gene])
 
                 else:
                     if similarity > self.fitted_population.shape[0] * (1 - self.performance['variety']):
@@ -172,3 +173,33 @@ class Optimizer(object):
         
         except ValueError as v:
             print('Your population is not adapted for your config parameters. Changing SHUFFLE_SCALE or VARIETY may avoid this kind of problems')
+
+    def choose_first_parent(self):
+        return self.fitted_population[self.fitted_population['Selected'] == False].sample(n = 1)
+
+    def choose_second_parent(self, probability, first_parent):
+        label = np.random.choice([cluster for cluster in probability.keys()], p=probability[int(first_parent['Labels'])])
+        return self.fitted_population[(self.fitted_population['Selected'] == False) & (self.fitted_population['Labels'] == label)].sample(n = 1)        
+
+    def child(self, first_parent, second_parent):
+        child = {}
+    
+        for column in range(self.fitted_population.columns.get_loc('Total')):
+            child[column] = [(max(float(first_parent[column]), float(second_parent[column])))]
+            
+        child['Total'] = sum([sum(value) for value in child.values()])
+
+        return pd.DataFrame.from_dict(child)
+
+
+    def update_fitted_population(self, child):
+        self.fitted_population.set_index('Chromosome')
+        self.fitted_population.update(child.set_index('Chromosome'))
+        self.fitted_population.reset_index()
+
+    def update_population(self, population, child, first_parent, second_parent):
+        for gene in range(population.shape[1]):
+            population.loc[int(child['Chromosome'])][gene] = max(population.loc[int(first_parent['Chromosome'])][gene], population.loc[int(second_parent['Chromosome'])][gene])
+
+        return population
+

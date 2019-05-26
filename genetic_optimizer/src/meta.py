@@ -1,13 +1,15 @@
 
+__author__ = 'WJ Maj'
+
 from abc import ABCMeta, abstractmethod
 
 class Implement_Func(metaclass=ABCMeta):
     
     @abstractmethod
     def generate(self):
-        pass
+        raise
 
     @abstractmethod
     def optimize(self):
-        pass
+        raise
 

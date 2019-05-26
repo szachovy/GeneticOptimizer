@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# *-* conding utf-8 *-*
 
 __author__ = 'WJ Maj'
 
@@ -17,7 +19,7 @@ class Representation_Types(metaclass=ABCMeta):
     '''
     @abstractmethod
     def generate(self):
-        raise NotImplementedError("Generator temporarily do not handle population generate requests")
+        raise 
 
                 
 class Generator(Representation_Types):
@@ -69,4 +71,4 @@ class Generator(Representation_Types):
             print('Configurator executer failed')
 
         finally:
-            exit(0)
+            pass

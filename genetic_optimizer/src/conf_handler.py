@@ -18,6 +18,7 @@ def path_existence(PATH):
     except AssertionError as a:
         raise IOError("selected configuration file doesn`t exist in that place")    
 
+
 def dir_existence(path):
     try:
         assert(os.path.isdir(path))
@@ -25,11 +26,17 @@ def dir_existence(path):
     except AssertionError as a:
         raise IOError("input or output dir moved or doesn`t exists")  
 
-def os_slashes():
-    if platform.system() == 'Linux':
-        return '/'
-    else:
-        return '\\'
+
+def os_slashes(init):
+    def wrapper(*args, **kwargs):
+        if platform.system() == 'Linux':
+            kwargs['slashes'] = '/'
+        else:
+            kwargs['slashes'] = '\\'
+
+        init(*args, **kwargs)
+    return wrapper
+
 
 class Load_Configuration(object):
     '''
@@ -37,9 +44,9 @@ class Load_Configuration(object):
         used from DEFAULTS.ini file placed in this Generator directory.
     '''
 
-    def __init__(self):
-        self.slashes = os_slashes()
-        self.PATH = '.{}Generator{}DEFAULTS.ini'.format(self.slashes, self.slashes)
+    @os_slashes
+    def __init__(self, slashes):
+        self.PATH = '.{}Generator{}DEFAULTS.ini'.format(slashes, slashes)
         if path_existence(self.PATH):
             self.config = ConfigParser()
             self.config.read(self.PATH)
@@ -54,15 +61,15 @@ class Main_Configuration(object):
         some behaviour used for genetic_optimizer algorythms
     '''
 
-    def __init__(self):
-        self.slashes = os_slashes()
-        self.PATH = '.{}src{}STANDARDS.conf'.format(self.slashes, self.slashes)
+    @os_slashes
+    def __init__(self, slashes):
+        self.PATH = '.{}src{}STANDARDS.conf'.format(slashes, slashes)
         if path_existence(self.PATH):
             self.config = ConfigParser()
             self.config.read(self.PATH)
             # REMEMBER TO CHANGE IT WHEN DEPLOY IF ERR
-            self.in_dir = str(".{}" + self.config.get('INPUTLOCATION', 'DIR') + "{}").format(self.slashes, self.slashes)
-            self.out_dir =str(".{}" + self.config.get('OUTPUTLOCATION', 'DIR') + "{}").format(self.slashes, self.slashes)
+            self.in_dir = str(".{}" + self.config.get('INPUTLOCATION', 'DIR') + "{}").format(slashes, slashes)
+            self.out_dir =str(".{}" + self.config.get('OUTPUTLOCATION', 'DIR') + "{}").format(slashes, slashes)
 
     def performance(self):
         shuffle_scale = float(self.config.get('PERFORMANCE', 'SHUFFLE_SCALE'))

@@ -20,19 +20,19 @@ class Configuration_Executer(object):
             self.population_size = int(population_size)
         except ValueError as v:
             print("Wrong type of population_size input, check the DEFAULTS for more info")
-            exit(0)
-                          
+            raise
+            
         try:
             self.chromosome_size = int(chromosome_size)
         except ValueError as v:
             print("Wrong type of chromosome_size input, check the DEFAULTS for more info")    
-            exit(0)
+            raise
                           
         try:
             self.equal_chromosomes = bool(equal_chromosomes)
         except ValueError as v:
             print("Wrong type of equal_chromosomes input, check the DEFAULTS for more info")   
-            exit(0)
+            raise
        
         self.initialization_method = initialization_method
         self.representation = representation
@@ -46,14 +46,12 @@ class Configuration_Executer(object):
                 count = self.chromosome_size
             
             if count < 0:
-                print('Numer of chromosomes cannot be negative value')
-                exit(0)
+                raise Exception('Numer of chromosomes cannot be negative value')
 
             return count
 
         except ValueError as v:
-            print('Number of chromosomes in each layer must be an integer value!')
-            exit(0)
+            raise Exception('Number of chromosomes in each layer must be an integer value!')
         
 
     def random_initialization(self):
@@ -61,6 +59,7 @@ class Configuration_Executer(object):
         
         if self.representation == 'Binary':
             print("You have chosen Binary representation option")
+
             if self.equal_chromosomes:
                 population = pd.DataFrame(data=np.random.randint(2, size=(self.population_size, self.chromosome_size)))
 

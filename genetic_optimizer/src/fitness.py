@@ -1,4 +1,6 @@
 
+__author__ = 'WJ Maj'
+
 import numpy as np
 import pandas as pd
 

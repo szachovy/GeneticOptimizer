@@ -1,4 +1,6 @@
 
+__author__ = 'WJ Maj'
+
 try:
     from optimizator import Optimizer
     from fitness import Fitness

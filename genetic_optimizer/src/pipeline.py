@@ -1,4 +1,9 @@
+#!/usr/bin/env python3
+# *-* coding utf-8 *-*
+
 # All sumarized here
+
+__author__ = 'WJ Maj'
 
 try:
     from conf_handler import Main_Configuration
@@ -41,7 +46,7 @@ class Pipeline(object):
             groups = self.new_population.group_population()
             print(str(datetime.now()) + "\n" + "Population {} grouped into clusters".format(self.generation))
 
-            # select parent
+            # make next generation
             self.population = self.new_population.next_generation(groups, self.population)
             print(str(datetime.now()) + "\n" + "Generated {} generation of population".format(self.generation))
             self.generation += 1

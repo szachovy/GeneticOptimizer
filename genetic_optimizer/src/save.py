@@ -1,12 +1,8 @@
 
 __author__ = 'WJ Maj'
 
-try:
-    from optimizator import Optimizer
-    from fitness import Fitness
-except ModuleNotFoundError as m:
-    from .optimizator import Optimizer
-    from .fitness import Fitness
+from .optimizator import Optimizer
+from .fitness import Fitness
 
 import logging
 

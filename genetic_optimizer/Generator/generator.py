@@ -41,9 +41,8 @@ class Generator(Representation_Types):
                 return self.generator.random_initialization()
         
             elif self.initialization_method == 'Heuristic':
-                print("Heuristic mode is not implemented yet, please be patient")
-                exit(0)
-                return self.generator.heuristic_initialization()
+                raise Exception("Heuristic mode is not implemented yet, please be patient")
+#                return self.generator.heuristic_initialization()
                 
         except Exception as e:
             raise Exception('Wrong input in initialization_method, check DEFAULTS for more info')

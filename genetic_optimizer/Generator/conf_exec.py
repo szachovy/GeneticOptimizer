@@ -25,8 +25,8 @@ class Configuration_Executer(object):
         try:
             self.chromosome_size = int(chromosome_size)
         except ValueError as v:
-            print("Wrong type of chromosome_size input, check the DEFAULTS for more info")    
-            raise
+            
+            raise v("Wrong type of chromosome_size input, check the DEFAULTS for more info")
                           
         try:
             self.equal_chromosomes = bool(equal_chromosomes)

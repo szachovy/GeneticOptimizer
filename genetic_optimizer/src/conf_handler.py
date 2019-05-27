@@ -46,6 +46,7 @@ class Load_Configuration(object):
 
     @os_slashes
     def __init__(self, slashes):
+        print(os.path.abspath(__file__))
         self.PATH = '.{}Generator{}DEFAULTS.ini'.format(slashes, slashes)
         if path_existence(self.PATH):
             self.config = ConfigParser()
@@ -86,17 +87,17 @@ class Main_Configuration(object):
             return getperformance
 
     def output_loc(self):
-        if any([bool(self.config.get('OUTPUTLOCATION', 'DOOUT')), bool(self.config.get('OUTPUTLOCATION', 'DOFIG')), bool(self.config.get('OUTPUTLOCATION', 'DOLOG'))]):
+        if any([self.config.getboolean('OUTPUTLOCATION', 'DOOUT'), self.config.getboolean('OUTPUTLOCATION', 'DOFIG'), self.config.getboolean('OUTPUTLOCATION', 'DOLOG')]):
             if dir_existence(self.out_dir):
                 getfiles = {'file_name' : False, 'fig_name' : False, 'log_name' : False}
 
-                if bool(self.config.get('OUTPUTLOCATION', 'DOOUT')):
+                if self.config.getboolean('OUTPUTLOCATION', 'DOOUT'):
                     getfiles['file_name'] = str(self.out_dir + self.config.get('OUTPUTLOCATION', 'OUTNAME') + '.' + self.config.get('OUTPUTLOCATION', 'OUTFORMAT'))
 
-                if bool(self.config.get('OUTPUTLOCATION', 'DOFIG')):
+                if self.config.getboolean('OUTPUTLOCATION', 'DOFIG'):
                     getfiles['fig_name'] = str(self.out_dir + self.config.get('OUTPUTLOCATION', 'FIGNAME') + '.' + self.config.get('OUTPUTLOCATION', 'FIGFORMAT'))
 
-                if bool(self.config.get('OUTPUTLOCATION', 'DOLOG')):
+                if self.config.getboolean('OUTPUTLOCATION', 'DOLOG'):
                     getfiles['log_name'] = str(self.out_dir + self.config.get('OUTPUTLOCATION', 'LOGNAME') + '.' + self.config.get('OUTPUTLOCATION', 'LOGFORMAT'))
 
                 return getfiles

@@ -8,10 +8,10 @@
 
 __author__ = 'WJ Maj'
 
-from src.meta import Implement_Func
-from src.conf_handler import Load_Configuration
-from src.pipeline import Pipeline
-from Generator.generator import Generator
+from .src.meta import Implement_Func
+from .src.conf_handler import Load_Configuration
+from .src.pipeline import Pipeline
+from .Generator.generator import Generator
 
 from configparser import ConfigParser
 import inspect
@@ -48,7 +48,7 @@ def check_file(opt):
     return wrapper
 
 
-class Genetic_Optimizer(Implement_Func):
+class Optimizer(Implement_Func):
     '''
         Generate or Optimize your data set in efficient way.
         ...      
@@ -70,7 +70,7 @@ class Genetic_Optimizer(Implement_Func):
         Pipeline(file_name, iterations, shuffle_scale, variety, chromosome_weight)
 
 if __name__ == '__main__':
-    gen = Genetic_Optimizer()
+    gen = Optimizer()
 #    gen.generate()
     gen.optimize('./datasets/bineq.csv', 5)
     

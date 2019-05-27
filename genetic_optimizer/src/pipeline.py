@@ -5,18 +5,12 @@
 
 __author__ = 'WJ Maj'
 
-try:
-    from conf_handler import Main_Configuration
-    from preprocessing import Preprocess_Dataframe
-    from fitness import Fitness
-    from optimizator import Optimizer
-    from save import Save
-except ModuleNotFoundError as m:
-    from .conf_handler import Main_Configuration
-    from .preprocessing import Preprocess_Dataframe
-    from .fitness import Fitness
-    from .optimizator import Optimizer
-    from .save import Save
+
+from .conf_handler import Main_Configuration
+from .preprocessing import Preprocess_Dataframe
+from .fitness import Fitness
+from .optimizator import Optimizer
+from .save import Save
 
 from datetime import datetime
 

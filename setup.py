@@ -13,14 +13,14 @@ REQUIRES_PYTHON = '>=3.6.5'
 VERSION = '1.0'
 
 REQUIRED = [
-    'python>=3.6.0',
     'pytest>=4.4.1',
     'configparser>=3.7.4',
     'numpy>=1.16.3',
     'pandas>=0.24.2',
-    'xlsxwriter>=1.1.18',
+    'xlsxwriter>=1.1.8',
     'sklearn>=0.0',
-    'scipy>=1.3.0'
+    'scipy>=1.3.0',
+    'matplotlib>=3.1.0'
 ]
 
 def readme():
@@ -39,7 +39,7 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
-    packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
+
     install_requires=REQUIRED,
     include_package_data=True,
     license='MIT',

@@ -62,7 +62,8 @@ class Main_Configuration(object):
     '''
 
     @os_slashes
-    def __init__(self, slashes):
+    def __init__(self, iterations, shuffle_scale, variety, chromosome_weight, slashes):
+        self.user_provided_input = {'iterations': iterations, 'shuffle_scale': shuffle_scale, 'variety': variety, 'chromosome_weight': chromosome_weight}
         self.PATH = '.{}src{}STANDARDS.conf'.format(slashes, slashes)
         if path_existence(self.PATH):
             self.config = ConfigParser()
@@ -72,18 +73,19 @@ class Main_Configuration(object):
             self.out_dir =str(".{}" + self.config.get('OUTPUTLOCATION', 'DIR') + "{}").format(slashes, slashes)
 
     def performance(self):
-        shuffle_scale = float(self.config.get('PERFORMANCE', 'SHUFFLE_SCALE'))
-        iterations = float(self.config.get('PERFORMANCE', 'ITER'))
-        chromosome_weight = float(self.config.get('PERFORMANCE', 'CHROMOSOMELAYERWEIGHT'))
-        variety = float(self.config.get('PERFORMANCE', 'VARIETY'))
-
-        if (shuffle_scale or variety) not in np.arange(0, 2, 0.01):
-            raise Exception('Sum of crossover probability and mutation probability must be in range from 0 to 1 (0% - 100%)')
+        getperformance = {'iterations' : float(self.config.get('PERFORMANCE', 'ITER')), 'shuffle_scale' : float(self.config.get('PERFORMANCE', 'SHUFFLE_SCALE')) , 'chromosome_weight' : float(self.config.get('PERFORMANCE', 'CHROMOSOMELAYERWEIGHT')), 'variety': float(self.config.get('PERFORMANCE', 'VARIETY'))}
         
-        elif (iterations or chromosome_weight) < 0:
+        for key, value in self.user_provided_input.items():
+            if value is not None:
+                getperformance[key] = value
+        
+        if (getperformance['shuffle_scale'] or getperformance['variety']) not in np.arange(0, 2, 0.01):
+            raise Exception('Sum of crossover probability and mutation probability must be in range from 0 to 1 (0% - 100%)')
+                
+        elif (getperformance['iterations'] or getperformance['chromosome_weight']) < 0:
             raise Exception('All features in PERFORMANCE section must be positive')
+
         else:
-            getperformance = {'iter' : iterations, 'shuffle_scale' : shuffle_scale , 'chromosome_weight' : chromosome_weight, 'variety': variety}
             return getperformance
 
     def input_loc(self):
@@ -91,19 +93,22 @@ class Main_Configuration(object):
             return self.in_dir
 
     def output_loc(self):
-        if dir_existence(self.out_dir):
-            getfiles = {'file_name' : False, 'fig_name' : False, 'log_name' : False}
+        if any([bool(self.config.get('OUTPUTLOCATION', 'DOOUT')), bool(self.config.get('OUTPUTLOCATION', 'DOFIG')), bool(self.config.get('OUTPUTLOCATION', 'DOLOG'))]):
+            if dir_existence(self.out_dir):
+                getfiles = {'file_name' : False, 'fig_name' : False, 'log_name' : False}
 
-            if bool(self.config.get('OUTPUTLOCATION', 'DOOUT')):
-                getfiles['file_name'] = str(self.out_dir + self.config.get('OUTPUTLOCATION', 'OUTNAME') + '.' + self.config.get('OUTPUTLOCATION', 'OUTFORMAT'))
+                if bool(self.config.get('OUTPUTLOCATION', 'DOOUT')):
+                    getfiles['file_name'] = str(self.out_dir + self.config.get('OUTPUTLOCATION', 'OUTNAME') + '.' + self.config.get('OUTPUTLOCATION', 'OUTFORMAT'))
 
-            if bool(self.config.get('OUTPUTLOCATION', 'DOFIG')):
-                getfiles['fig_name'] = str(self.out_dir + self.config.get('OUTPUTLOCATION', 'FIGNAME') + '.' + self.config.get('OUTPUTLOCATION', 'FIGFORMAT'))
+                if bool(self.config.get('OUTPUTLOCATION', 'DOFIG')):
+                    getfiles['fig_name'] = str(self.out_dir + self.config.get('OUTPUTLOCATION', 'FIGNAME') + '.' + self.config.get('OUTPUTLOCATION', 'FIGFORMAT'))
 
-            if bool(self.config.get('OUTPUTLOCATION', 'DOLOG')):
-                getfiles['log_name'] = str(self.out_dir + self.config.get('OUTPUTLOCATION', 'LOGNAME') + '.' + self.config.get('OUTPUTLOCATION', 'LOGFORMAT'))
+                if bool(self.config.get('OUTPUTLOCATION', 'DOLOG')):
+                    getfiles['log_name'] = str(self.out_dir + self.config.get('OUTPUTLOCATION', 'LOGNAME') + '.' + self.config.get('OUTPUTLOCATION', 'LOGFORMAT'))
 
-            return getfiles
+                return getfiles
+        else:
+            return False
 
     # i`ll do it later
     def server(self):

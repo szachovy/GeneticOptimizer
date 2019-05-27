@@ -7,10 +7,6 @@ from src.meta import Implement_Func
 from src.conf_handler import Load_Configuration
 from src.pipeline import Pipeline
 from Generator.generator import Generator
-# from src.preprocessing import Preprocess_Dataframe
-# from src.fitness import Fitness
-# from src.optimizator import Optimizer
-# from src.save import Save
 
 from configparser import ConfigParser
 import inspect
@@ -27,7 +23,10 @@ def load_config(gen):
                 kwargs[arg]
             except KeyError as k:
                 kwargs[arg] = config.read(arg.upper())
-        gen(*args, **kwargs)
+        try:
+            gen(*args, **kwargs)
+        except TypeError as t:
+            raise t('Insert full name arguments while changing configuration parameters')
     return wrapper
         
 def check_file(opt):
@@ -59,14 +58,14 @@ class Genetic_Optimizer(Implement_Func):
     
     @staticmethod
     @check_file
-    def optimize(file_name):
+    def optimize(file_name, iterations=None, shuffle_scale=None, variety=None, chromosome_weight=None):
         '''
             ...
         '''
-        Pipeline(file_name)
+        Pipeline(file_name, iterations, shuffle_scale, variety, chromosome_weight)
 
 if __name__ == '__main__':
     gen = Genetic_Optimizer()
 #    gen.generate()
-    gen.optimize('bineq.csv')
+    gen.optimize('bineq.csv', 5)
     

@@ -21,8 +21,8 @@ except ModuleNotFoundError as m:
 from datetime import datetime
 
 class Pipeline(object):
-    def __init__(self, file_name):
-        self.config = Main_Configuration()
+    def __init__(self, file_name, iterations, shuffle_scale, variety, chromosome_weight):
+        self.config = Main_Configuration(iterations, shuffle_scale, variety, chromosome_weight)
         self.performance = self.config.performance()
         
         start = datetime.now()
@@ -32,7 +32,7 @@ class Pipeline(object):
         print(str(datetime.now()) + "\n" + "File found and cleaned properly")
 
         self.generation = 0
-        while self.generation != self.performance['iter']:  
+        while self.generation != self.performance['iterations']:  
                
             #fitness
             self.fitted_population = Fitness(self.population).fit_population()

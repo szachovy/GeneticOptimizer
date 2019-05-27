@@ -31,9 +31,9 @@ class Save(object):
 
     @save_population.setter
     def save_population(self, population):        
-        get_files = self.config.output_loc()
+        if self.config.output_loc():
+            get_files = self.config.output_loc()
         
-        if any(get_files.values()):
             if get_files['file_name']:
                 extension = get_files['file_name'].split(".")
 

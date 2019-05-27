@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+#TODO
+# check optimizer on other files
+# package path change
+# check setup.py
+
 __author__ = 'WJ Maj'
 
 from src.meta import Implement_Func
@@ -39,7 +44,7 @@ def check_file(opt):
             if args[0]:                     
                 opt(*args)
         except IndexError as i:
-            print('Pandas DataFrame or file are not passed into function parameter during optimization')
+            print('Pandas DataFrame or file path are not passed into function parameter during optimization')
     return wrapper
 
 
@@ -67,5 +72,5 @@ class Genetic_Optimizer(Implement_Func):
 if __name__ == '__main__':
     gen = Genetic_Optimizer()
 #    gen.generate()
-    gen.optimize('bineq.csv', 5)
+    gen.optimize('./datasets/bineq.csv', 5)
     

@@ -17,17 +17,18 @@ class Preprocess_Dataframe(object):
         extension = self.file_name.split(".")
 
         if extension[-1] == 'csv':
-            self.population = pd.read_csv('{}{}'.format(self.config.input_loc(), self.file_name, header=None))
-     
+            self.population = pd.read_csv(self.file_name)
+            self.drop_unnamed()     
         elif extension[-1] == 'xlsx':
-            self.population = pd.read_xlsx('{}{}'.format(self.config.input_loc(), self.file_name, header=None))
-     
+            self.population = pd.read_xlsx(self.file_name)
+            self.drop_unnamed() 
         elif extension[-1] == 'json':
-            self.population = pd.read_json('{}{}'.format(self.config.input_loc(), self.file_name, header=None))
+            self.population = pd.read_json(self.file_name)
+            self.drop_unnamed()
+
         else:
             self.population = pd.DataFrame(data=file_name)     
 
-        self.drop_unnamed()
         self.check_types()
         self.all_nan_exception()
 

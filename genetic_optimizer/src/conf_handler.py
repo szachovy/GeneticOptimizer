@@ -68,8 +68,6 @@ class Main_Configuration(object):
         if path_existence(self.PATH):
             self.config = ConfigParser()
             self.config.read(self.PATH)
-            # REMEMBER TO CHANGE IT WHEN DEPLOY IF ERR
-            self.in_dir = str(".{}" + self.config.get('INPUTLOCATION', 'DIR') + "{}").format(slashes, slashes)
             self.out_dir =str(".{}" + self.config.get('OUTPUTLOCATION', 'DIR') + "{}").format(slashes, slashes)
 
     def performance(self):
@@ -86,10 +84,6 @@ class Main_Configuration(object):
 
         else:
             return getperformance
-
-    def input_loc(self):
-        if dir_existence(self.in_dir):        
-            return self.in_dir
 
     def output_loc(self):
         if any([bool(self.config.get('OUTPUTLOCATION', 'DOOUT')), bool(self.config.get('OUTPUTLOCATION', 'DOFIG')), bool(self.config.get('OUTPUTLOCATION', 'DOLOG'))]):

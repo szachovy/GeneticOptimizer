@@ -63,12 +63,7 @@ class Main_Configuration(object):
 
     @os_slashes
     def __init__(self, iterations, shuffle_scale, variety, chromosome_weight, slashes):
-<<<<<<< HEAD
-        self.user_provided_input = {'iterations': iterations, 'shuffle_scale': shuffle_scale, 'variety': variety, 'chromosome_weight': chromosome_weight}
-=======
         self.user_provided_input = {'iterations' : iterations, 'shuffle_scale': shuffle_scale, 'variety': variety, 'chromosome_weight': chromosome_weight}
-
->>>>>>> 2ab6f11c1307942573f36ca61dc141c8938ca4fe
         self.PATH = '.{}src{}STANDARDS.conf'.format(slashes, slashes)
         if path_existence(self.PATH):
             self.config = ConfigParser()
@@ -79,25 +74,13 @@ class Main_Configuration(object):
 
     def performance(self):
         getperformance = {'iterations' : float(self.config.get('PERFORMANCE', 'ITER')), 'shuffle_scale' : float(self.config.get('PERFORMANCE', 'SHUFFLE_SCALE')) , 'chromosome_weight' : float(self.config.get('PERFORMANCE', 'CHROMOSOMELAYERWEIGHT')), 'variety': float(self.config.get('PERFORMANCE', 'VARIETY'))}
-<<<<<<< HEAD
-        
-        for key, value in self.user_provided_input.items():
-            if value is not None:
-                getperformance[key] = value
-        
-        if (getperformance['shuffle_scale'] or getperformance['variety']) not in np.arange(0, 2, 0.01):
-            raise Exception('Sum of crossover probability and mutation probability must be in range from 0 to 1 (0% - 100%)')
-                
-=======
-
         for key, value in self.user_provided_input.items():
             if value is not None:
                 getperformance[key] = value
 
         if (getperformance['shuffle_scale'] or getperformance['variety']) not in np.arange(0, 2, 0.01):
             raise Exception('Sum of crossover probability and mutation probability must be in range from 0 to 1 (0% - 100%)')
-        
->>>>>>> 2ab6f11c1307942573f36ca61dc141c8938ca4fe
+
         elif (getperformance['iterations'] or getperformance['chromosome_weight']) < 0:
             raise Exception('All features in PERFORMANCE section must be positive')
 

@@ -67,9 +67,5 @@ class Genetic_Optimizer(Implement_Func):
 if __name__ == '__main__':
     gen = Genetic_Optimizer()
 #    gen.generate()
-<<<<<<< HEAD
     gen.optimize('bineq.csv', 5)
-=======
-    gen.optimize('bineq.csv', 5, 0.6, 0.8)
->>>>>>> 2ab6f11c1307942573f36ca61dc141c8938ca4fe
     

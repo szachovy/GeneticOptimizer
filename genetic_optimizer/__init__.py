@@ -34,9 +34,9 @@ def check_file(opt):
         Raise exception if user do not provide input data set,
         which will be optimized.
     '''
-    def wrapper(*args):
+    def wrapper(*args, **kwargs):
         try:
-            if args[0]:
+            if args[0]:                     
                 opt(*args)
         except IndexError as i:
             print('Pandas DataFrame or file are not passed into function parameter during optimization')
@@ -50,7 +50,7 @@ class Genetic_Optimizer(Implement_Func):
     '''
     @staticmethod
     @load_config
-    def generate(population_size : str, chromosome_size : str, equal_chromosomes : str, initialization_method : str, representation : str, saving_method : str):
+    def generate(population_size, chromosome_size, equal_chromosomes, initialization_method, representation, saving_method):
         '''
             ...
         '''
@@ -67,5 +67,9 @@ class Genetic_Optimizer(Implement_Func):
 if __name__ == '__main__':
     gen = Genetic_Optimizer()
 #    gen.generate()
+<<<<<<< HEAD
     gen.optimize('bineq.csv', 5)
+=======
+    gen.optimize('bineq.csv', 5, 0.6, 0.8)
+>>>>>>> 2ab6f11c1307942573f36ca61dc141c8938ca4fe
     

@@ -1,7 +1,7 @@
 configparser>=3.7.4
 numpy>=1.16.3
 pandas>=0.24.2
-xlsxwriter>=1.1.18
+xlsxwriter>=1.1.8
 sklearn>=0.0
 scipy>=1.3.0
 matplotlib>=3.1.0

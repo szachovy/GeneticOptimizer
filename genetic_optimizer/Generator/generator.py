@@ -28,7 +28,7 @@ class Generator(Representation_Types):
         executing Configuration_Executer functions  
         and produce output file
     '''       
-    def __init__(self, population_size, chromosome_size, equal_chromosomes, initialization_method, representation, saving_method):
+    def __init__(self, population_size, chromosome_size, equal_chromosomes, initialization_method, representation, saving_method): # send parameters to conf_exec file
 
         self.initialization_method = initialization_method
         self.generator = Configuration_Executer(population_size, chromosome_size, equal_chromosomes, initialization_method, representation, saving_method)
@@ -46,7 +46,6 @@ class Generator(Representation_Types):
                 
         except Exception as e:
             raise Exception('Wrong input in initialization_method, check DEFAULTS for more info')
-            exit(0)
 
     def save_population(self, population):
 
@@ -57,7 +56,6 @@ class Generator(Representation_Types):
 
         except AssertionError as a:
             print('Incorrect file name')
-            exit(0)
 
     
     def generate(self):

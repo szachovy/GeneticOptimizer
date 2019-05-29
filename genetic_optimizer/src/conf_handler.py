@@ -7,11 +7,10 @@ import socket
 import platform
 import numpy as np
 
-def path_existence(PATH):
-    '''
-        Check the path existence of two main configuration files.
-        ...
-    '''
+def path_existence(PATH : str) -> bool:
+    """
+        Check the path existence of configuration files.
+    """
     try:
         assert(os.path.exists(PATH))
         return True
@@ -19,7 +18,10 @@ def path_existence(PATH):
         raise IOError("selected configuration file doesn`t exist in that place")    
 
 
-def dir_existence(path):
+def dir_existence(path : str) -> bool:
+    """
+        Check the directory existence of configuration files
+    """
     try:
         assert(os.path.isdir(path))
         return True
@@ -27,7 +29,7 @@ def dir_existence(path):
         raise IOError("input or output dir moved or doesn`t exists")  
 
 
-def os_slashes(init):
+def os_slashes(init): # perform system slashes
     def wrapper(*args, **kwargs):
         if platform.system() == 'Linux':
             kwargs['slashes'] = '/'
@@ -46,8 +48,9 @@ class Load_Configuration(object):
 
     @os_slashes
     def __init__(self, slashes):
-        print(os.path.abspath(__file__))
-        self.PATH = '.{}Generator{}DEFAULTS.ini'.format(slashes, slashes)
+        os.path.dirname(os.path.realpath(__file__))
+#        self.PATH = '.{}Generator{}DEFAULTS.ini'.format(slashes, slashes)
+        self.PATH = '{}{}DEFAULTS.ini'.format(os.path.dirname(os.path.realpath(__file__)), slashes)
         if path_existence(self.PATH):
             self.config = ConfigParser()
             self.config.read(self.PATH)
@@ -57,22 +60,31 @@ class Load_Configuration(object):
 
 
 class Main_Configuration(object):
-    '''
+    """
         Configuration class used by STANDARDS.conf to manipulate
         some behaviour used for genetic_optimizer algorythms
-    '''
+    """
 
     @os_slashes
     def __init__(self, iterations, shuffle_scale, variety, chromosome_weight, slashes):
         self.user_provided_input = {'iterations' : iterations, 'shuffle_scale': shuffle_scale, 'variety': variety, 'chromosome_weight': chromosome_weight}
-        self.PATH = '.{}src{}STANDARDS.conf'.format(slashes, slashes)
+        self.PATH = '{}{}STANDARDS.conf'.format(os.path.dirname(os.path.realpath(__file__)), slashes)
         if path_existence(self.PATH):
             self.config = ConfigParser()
             self.config.read(self.PATH)
-            self.out_dir =str(".{}" + self.config.get('OUTPUTLOCATION', 'DIR') + "{}").format(slashes, slashes)
+            
+            directory = os.path.join(os.getcwd(), self.config.get('OUTPUTLOCATION', 'DIR'))
+            if not os.path.exists(directory):
+               os.makedirs(directory)            
 
-    def performance(self):
-        getperformance = {'iterations' : float(self.config.get('PERFORMANCE', 'ITER')), 'shuffle_scale' : float(self.config.get('PERFORMANCE', 'SHUFFLE_SCALE')) , 'chromosome_weight' : float(self.config.get('PERFORMANCE', 'CHROMOSOMELAYERWEIGHT')), 'variety': float(self.config.get('PERFORMANCE', 'VARIETY'))}
+            self.out_dir = str(directory) + '{}'.format(slashes)
+
+    def performance(self) -> dict:
+        """ 
+            Performance section in STANDARDS.conf
+            Accumulate user provided input with default options
+        """
+        getperformance = {'iterations' : float(self.config.get('PERFORMANCE', 'ITERATIONS')), 'shuffle_scale' : float(self.config.get('PERFORMANCE', 'SHUFFLE_SCALE')) , 'chromosome_weight' : float(self.config.get('PERFORMANCE', 'CHROMOSOMELAYERWEIGHT')), 'variety': float(self.config.get('PERFORMANCE', 'VARIETY'))}
         for key, value in self.user_provided_input.items():
             if value is not None:
                 getperformance[key] = value
@@ -87,6 +99,9 @@ class Main_Configuration(object):
             return getperformance
 
     def output_loc(self):
+        """
+            Route to output directory if some saving options were provided
+        """
         if any([self.config.getboolean('OUTPUTLOCATION', 'DOOUT'), self.config.getboolean('OUTPUTLOCATION', 'DOFIG'), self.config.getboolean('OUTPUTLOCATION', 'DOLOG')]):
             if dir_existence(self.out_dir):
                 getfiles = {'file_name' : False, 'fig_name' : False, 'log_name' : False}
@@ -106,7 +121,7 @@ class Main_Configuration(object):
 
     # i`ll do it later
     def server(self):
-        if bool(self.config.get('SERVER', 'ACTIVE')):
+        if self.config.getboolean('SERVER', 'ACTIVE'):
             pass
         return
 

@@ -7,9 +7,17 @@ from .fitness import Fitness
 import logging
 
 class Save(object):
+    """
+        Save documented changes in files.
+        
+        Arguments:
+            *args: necessary pipeline data which need to be saved
 
-    def __init__(self, file_name, config, start, stop, generations, performance):
-        self.file_name = file_name
+        Returns:
+            str: ending status program info        
+    """
+    def __init__(self, data, config, start, stop, generations, performance):
+        self.data = data
         self.config = config
         self.duration = stop - start
         self.generations = generations
@@ -19,14 +27,14 @@ class Save(object):
         
 
     @property
-    def save_population(self):
+    def save_population(self) -> str: # Return finished program status
         if self.saved:
             return 'Check results directory to see optimizer results'
         else:
             raise 'None of saving options provided in STANDARDS.conf'
 
     @save_population.setter
-    def save_population(self, population):        
+    def save_population(self, population): # carry settings to files in out directory       
         if self.config.output_loc():
             get_files = self.config.output_loc()
         
@@ -41,14 +49,13 @@ class Save(object):
                     population.to_json(get_files['file_name'])  
                 else:
                     print('Wrong extension of saving file provided, unable to save')
-                    exit(0)
 
             if get_files['fig_name']:
-                Optimizer(self.config.performance(), Fitness(population).fit_population()).group_population(save=True, file_name=get_files['fig_name'])
+                Optimizer(self.config.performance(), Fitness(population).fit_population()).group_population(save=True, data=get_files['fig_name'])
 
             if get_files['log_name']:
                 logging.basicConfig(level = logging.INFO, filename = get_files['log_name'])
-                logging.info('Population optimized : ' + self.file_name) 
+                logging.info('Population optimized : ' + self.data) 
                 logging.info('Optimizer started up at : ' + str(self.start)) 
                 logging.info('Optimizer ended up at : ' + str(self.stop)) 
                 logging.info('Total time of optimizer activity : ' + str(self.stop - self.start))  

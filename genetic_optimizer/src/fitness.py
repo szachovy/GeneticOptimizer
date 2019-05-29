@@ -5,7 +5,11 @@ import numpy as np
 import pandas as pd
 
 class Fitness(object):
-
+    """
+        Calculate fittnes function for each gene in chromosome, then accumulate them 
+        according to comparison of all gene columns variety.
+    
+    """
     def __init__(self, population):
         self.denominators = []            
         self.population = population
@@ -15,6 +19,13 @@ class Fitness(object):
             self.denominators.append(self.population[column].count())
     
     def fit_population(self):
+        """
+            Args:
+                population: get basic population from dataset of chromsomes.
+            
+            Returns:
+                fit_population: population fitted by dynamic fitness function.
+        """
         fit_population = {}
         get_denominator = 0
 

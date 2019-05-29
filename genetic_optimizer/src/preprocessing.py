@@ -5,30 +5,40 @@ import pandas as pd
 import numpy as np
 
 class Preprocess_Dataframe(object):
-    '''
-        
-    '''
-    def __init__(self, file_name, config):
-        self.file_name = file_name
+    """
+        Check property of dataset,
+        alarm irregularities in case of wrongs in data
+
+        Arguments:
+            data: population sent in file or dataframe
+            config: self config or default
+
+        Returns:
+            population: exact dataset for futher processing -> pandas.DataFrame
+    
+    """
+    def __init__(self, data, config):
+        self.data = data
         self.config = config
         self.population = None
 
     def get_file(self):
-        extension = self.file_name.split(".")
-
-        if extension[-1] == 'csv':
-            self.population = pd.read_csv(self.file_name)
-            self.drop_unnamed()     
-        elif extension[-1] == 'xlsx':
-            self.population = pd.read_xlsx(self.file_name)
-            self.drop_unnamed() 
-        elif extension[-1] == 'json':
-            self.population = pd.read_json(self.file_name)
-            self.drop_unnamed()
+        if type(self.data) is not str: 
+            self.population = pd.DataFrame(data=self.data)     
 
         else:
-            self.population = pd.DataFrame(data=file_name)     
+            extension = self.data.split(".")
 
+            if extension[-1] == 'csv':
+                self.population = pd.read_csv(self.data)
+                self.drop_unnamed()     
+            elif extension[-1] == 'xlsx':
+                self.population = pd.read_xlsx(self.data)
+                self.drop_unnamed() 
+            elif extension[-1] == 'json':
+                self.population = pd.read_json(self.data)
+                self.drop_unnamed()
+            
         self.check_types()
         self.all_nan_exception()
 

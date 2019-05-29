@@ -5,9 +5,26 @@ import numpy as np
 import pandas as pd
 import random
 import platform
+import os
 
 if platform.system() == 'Linux':
     import xlsxwriter # support saving xlsx file in unix-domain systems
+
+
+def makedir(save):
+    """
+        Create required directory if not exists
+        
+        Args:
+            population: population which will be saved in save function
+            file_name: file created inside directory
+    """
+    def wrapper(*args):
+        directory = os.path.join(os.getcwd(), 'datasets')
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        save(*args)
+    return wrapper
 
 class Configuration_Executer(object):
     '''
@@ -38,7 +55,7 @@ class Configuration_Executer(object):
         self.representation = representation
         self.saving_method = saving_method       
 
-    def count_chromosomes(self, chromosome_layer):
+    def count_chromosomes(self, chromosome_layer : str) -> int:
         try:
             count = int(input('How many chromosomes in {0} layer, full chromosome length is {1} : '.format(chromosome_layer, self.chromosome_size)))
 
@@ -172,9 +189,10 @@ class Configuration_Executer(object):
 
     # i`ll do it later
     def heuristic_initialization(self):
-        return
+        return            
 
-    def save(self, population, file_name):
+    @makedir
+    def save(self, population, file_name : str): # save population with given extension
         getos_slashes = self.os_slashes_for_saving()
 
         if self.saving_method == 'csv':
@@ -199,7 +217,7 @@ class Configuration_Executer(object):
             raise Exception('Wrong input in saving method, check DEFAULTS for more info')
 
     @staticmethod
-    def os_slashes_for_saving():
+    def os_slashes_for_saving() -> str: # Perform appropiate slashes
         if platform.system() == 'Linux':
             return '/'
         else:

@@ -10,10 +10,9 @@ URL = 'https://github.com/szachovy/GeneticOptimizer'
 EMAIL = 'wjmaj98@gmail.com'
 AUTHOR = 'WJ Maj'
 REQUIRES_PYTHON = '>=3.6.5'
-VERSION = '1.0'
+VERSION = '0.1'
 
 REQUIRED = [
-    'pytest>=4.4.1',
     'configparser>=3.7.4',
     'numpy>=1.16.3',
     'pandas>=0.24.2',

@@ -55,7 +55,7 @@ _These are default options for optimizer, you can change them in STANDARDS.conf 
 
 ## Cons
 
-Fitness and parent selection process takes place recursively. If you are not using some RDD computing, program execution may be longer.
+- Fitness and parent selection process takes place recursively. If you are not using some RDD computing, program execution may be longer.
 
 ## Contributing
 
@@ -68,8 +68,8 @@ For major changes, please open an issue first to discuss what you would like to 
 
 ## Tools
 
-[micro editor](https://micro-editor.github.io/)
-Unix console
+- [micro editor](https://micro-editor.github.io/)
+- Unix console
 
 _Code is mostly written in accordance with [Google PEP style guide](https://google.github.io/styleguide/pyguide.html)_
 

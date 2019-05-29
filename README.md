@@ -12,16 +12,16 @@ _Genetic algorithm optimizer using K-Means clustering with one way ANOVA algorit
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install genetic_optimizer.
 
 ```bash
-pip install genetic_optimizer
+pip3 install genetic-optimizer
 ```
 
 ### Note:
 
-Package require Python 3.x.x, using genetic_optimizer in Python 2.x.x projects may not work correctly.
+Package require =>Python 3.6.5, using genetic_optimizer in Python 2.x.x projects may not work correctly.
 If you are not sure about your python version, try:
 
 ```bash
-pip3 install genetic_optimizer
+python3 --version
 ```
 
 ## Usage

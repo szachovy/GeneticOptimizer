@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
+from setuptools import setup, find_packages
+from os import path
 
 # Package meta-data.
 NAME = 'genetic_optimizer'
@@ -10,7 +11,7 @@ URL = 'https://github.com/szachovy/GeneticOptimizer'
 EMAIL = 'wjmaj98@gmail.com'
 AUTHOR = 'WJ Maj'
 REQUIRES_PYTHON = '>=3.6.5'
-VERSION = '0.1'
+VERSION = '0.1.11'
 
 REQUIRED = [
     'configparser>=3.7.4',
@@ -22,16 +23,22 @@ REQUIRED = [
     'matplotlib>=3.1.0'
 ]
 
-def readme():
-    with open('README.md') as f:
-        return f.read()
+# def readme():
+    # with open('README.md') as f:
+        # return f.read()
+
+with open(path.join(path.abspath(path.dirname(__file__)), 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
+
+with open(path.join(path.abspath(path.dirname(__file__)), 'LICENSE'), encoding='utf-8') as f:
+    license = f.read()
 
 setup(
     name=NAME,
     version=VERSION,
 
     description=DESCRIPTION,
-    long_description=readme(),
+    long_description=long_description,
     long_description_content_type='text/markdown',
 
     author=AUTHOR,
@@ -39,8 +46,10 @@ setup(
     python_requires=REQUIRES_PYTHON,
     url=URL,
 
+    packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*", "Images"]),
     install_requires=REQUIRED,
     include_package_data=True,
+#    license='MIT',
     license='MIT',
     classifiers=[
         # Trove classifiers

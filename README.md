@@ -1,11 +1,11 @@
 # Genetic Optimizer
-### Genetic algorithm optimizer using K-Means clustering with one way ANOVA algorithms
+_Genetic algorithm optimizer using K-Means clustering with one way ANOVA algorithms_
 
 ## Before:
 ![github-small](https://github.com/szachovy/GeneticOptimizer/blob/master/Images/first.png)
 
 ## After:
-![github-small](https://github.com/szachovy/GeneticOptimizer/blob/master/Images/last.png)
+![github-small](https://github.com/szachovy/GeneticOptimizer/blob/master/Images/last.svg)
 
 ## Installation:
 

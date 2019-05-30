@@ -11,7 +11,7 @@ URL = 'https://github.com/szachovy/GeneticOptimizer'
 EMAIL = 'wjmaj98@gmail.com'
 AUTHOR = 'WJ Maj'
 REQUIRES_PYTHON = '>=3.6.5'
-VERSION = '0.1.11'
+VERSION = '0.1.2'
 
 REQUIRED = [
     'configparser>=3.7.4',
@@ -24,7 +24,7 @@ REQUIRED = [
 ]
 
 
-with open(path.join(path.abspath(path.dirname(__file__)), 'README.md'), encoding='utf-8') as f:
+with open(path.join(path.abspath(path.dirname(__file__)), 'README.md')) as f:
     long_description = f.read()
 
 setup(

@@ -2,6 +2,7 @@
 _Genetic algorithm optimizer using K-Means clustering with one way ANOVA algorithms_
 
 [![Build Status](https://travis-ci.org/szachovy/GeneticOptimizer.svg?branch=master)](https://travis-ci.org/szachovy/GeneticOptimizer)
+[![PyPI version](https://badge.fury.io/py/genetic-optimizer.svg)](https://badge.fury.io/py/genetic-optimizer)
 
 ## Before:
 ![github-small](https://github.com/szachovy/GeneticOptimizer/blob/master/Images/first.png)

@@ -23,15 +23,9 @@ REQUIRED = [
     'matplotlib>=3.1.0'
 ]
 
-# def readme():
-    # with open('README.md') as f:
-        # return f.read()
 
 with open(path.join(path.abspath(path.dirname(__file__)), 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
-
-with open(path.join(path.abspath(path.dirname(__file__)), 'LICENSE'), encoding='utf-8') as f:
-    license = f.read()
 
 setup(
     name=NAME,
@@ -49,7 +43,6 @@ setup(
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*", "Images"]),
     install_requires=REQUIRED,
     include_package_data=True,
-#    license='MIT',
     license='MIT',
     classifiers=[
         # Trove classifiers

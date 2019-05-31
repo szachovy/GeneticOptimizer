@@ -31,10 +31,10 @@ def dir_existence(path : str) -> bool:
 
 def os_slashes(init): # perform system slashes
     def wrapper(*args, **kwargs):
-        if platform.system() == 'Linux':
-            kwargs['slashes'] = '/'
-        else:
+        if platform.system() == 'Windows':
             kwargs['slashes'] = '\\'
+        else:
+            kwargs['slashes'] = '/'
 
         init(*args, **kwargs)
     return wrapper

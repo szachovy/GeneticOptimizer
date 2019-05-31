@@ -218,7 +218,7 @@ class Configuration_Executer(object):
 
     @staticmethod
     def os_slashes_for_saving() -> str: # Perform appropiate slashes
-        if platform.system() == 'Linux':
-            return '/'
-        else:
+        if platform.system() == 'Windows':
             return '\\'
+        else:
+            return '/'

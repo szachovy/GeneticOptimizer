@@ -11,7 +11,7 @@ URL = 'https://github.com/szachovy/GeneticOptimizer'
 EMAIL = 'wjmaj98@gmail.com'
 AUTHOR = 'WJ Maj'
 REQUIRES_PYTHON = '>=3.6.5'
-VERSION = '0.1.5'
+VERSION = '0.1.6'
 
 REQUIRED = [
     'configparser>=3.7.4',

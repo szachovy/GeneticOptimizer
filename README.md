@@ -46,7 +46,7 @@ _These are default options for optimizer, you can change them in STANDARDS.conf 
 
 ### Note
 
-- If optimizer got stuck at the beginning, that usually means that your dataframe with population to small to find appropiate parents in order to create next generations.
+- If optimizer got stuck at the beginning, that usually means that your dataframe with population is to small to find appropiate parents in order to create next generations.
 
 - For more description, please check out project wiki.
 

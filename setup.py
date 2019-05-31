@@ -20,7 +20,8 @@ REQUIRED = [
     'xlsxwriter>=1.1.8',
     'sklearn>=0.0',
     'scipy>=1.3.0',
-    'matplotlib>=3.1.0'
+    'matplotlib>=3.1.0',
+    'xlrd>=1.0.0'
 ]
 
 

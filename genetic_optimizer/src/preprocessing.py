@@ -33,7 +33,7 @@ class Preprocess_Dataframe(object):
                 self.population = pd.read_csv(self.data)
                 self.drop_unnamed()     
             elif extension[-1] == 'xlsx':
-                self.population = pd.read_xlsx(self.data)
+                self.population = pd.read_excel(self.data)
                 self.drop_unnamed() 
             elif extension[-1] == 'json':
                 self.population = pd.read_json(self.data)

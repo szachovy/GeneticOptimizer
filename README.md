@@ -33,13 +33,13 @@ python3 --version
 import genetic_optimizer
 
 some_object = genetic_optimizer.Optimizer()
-some_object = generate(population_size=46, chromosome_size=8, equal_chromosomes=True, initialization_method='Random', representation='Binary', saving_method='csv')
+some_object.generate(population_size=46, chromosome_size=8, equal_chromosomes=True, initialization_method='Random', representation='Binary', saving_method='csv')
 ```
 
 _These are default options for generator, you can change them in DEFAULTS.ini file in package directory_
 
 ```python
-some_object = optimize(data=None, iterations=12, shuffle_scale=0.6, variety=0.8, chromosome_weight=0.0000001)
+some_object.optimize(data=None, iterations=12, shuffle_scale=0.6, variety=0.8, chromosome_weight=0.0000001)
 ```
 
 _These are default options for optimizer, you can change them in STANDARDS.conf file in package directory_

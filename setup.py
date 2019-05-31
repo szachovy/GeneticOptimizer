@@ -11,7 +11,7 @@ URL = 'https://github.com/szachovy/GeneticOptimizer'
 EMAIL = 'wjmaj98@gmail.com'
 AUTHOR = 'WJ Maj'
 REQUIRES_PYTHON = '>=3.6.5'
-VERSION = '0.1.2'
+VERSION = '0.1.5'
 
 REQUIRED = [
     'configparser>=3.7.4',
@@ -43,6 +43,11 @@ setup(
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*", "Images"]),
     install_requires=REQUIRED,
     include_package_data=True,
+    package_data = {
+    # If any package contains *.ini files, include them
+        '': ['*.ini'],
+        '': ['*.conf']
+    },
     license='MIT',
     classifiers=[
         # Trove classifiers

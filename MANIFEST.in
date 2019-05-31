@@ -1,1 +1,3 @@
 include README.md
+include genetic_optimizer/src/DEFAULTS.ini
+include genetic_optimizer/src/STANDARDS.conf

@@ -89,11 +89,11 @@ class Main_Configuration(object):
             if value is not None:
                 getperformance[key] = value
 
-        if (getperformance['shuffle_scale'] or getperformance['variety']) not in np.arange(0, 2, 0.01):
-            raise Exception('Sum of crossover probability and mutation probability must be in range from 0 to 1 (0% - 100%)')
+        if (round(getperformance['shuffle_scale'], 2) or round(getperformance['variety'], 2)) not in np.arange(0, 2, 0.01):
+            raise Exception('shuffle_scale or variety must be in range from 0 to 1 (0% - 100%)')
 
         elif (getperformance['iterations'] or getperformance['chromosome_weight']) < 0:
-            raise Exception('All features in PERFORMANCE section must be positive')
+            raise Exception('All features must be positive')
 
         else:
             return getperformance

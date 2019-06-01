@@ -25,20 +25,23 @@ class Preprocess_Dataframe(object):
     def get_file(self):
         if type(self.data) is not str: 
             self.population = pd.DataFrame(data=self.data)     
+            self.population.sort_index(inplace=True)
 
         else:
             extension = self.data.split(".")
 
             if extension[-1] == 'csv':
-                self.population = pd.read_csv(self.data)
-                self.drop_unnamed()     
+                self.population = pd.read_csv(self.data)     
+                self.drop_unnamed()
             elif extension[-1] == 'xlsx':
                 self.population = pd.read_excel(self.data)
-                self.drop_unnamed() 
+                self.drop_unnamed()
             elif extension[-1] == 'json':
                 self.population = pd.read_json(self.data)
-                self.drop_unnamed()
             
+            self.population.sort_index(inplace=True)
+        
+        print(self.population)
         self.check_types()
         self.all_nan_exception()
 

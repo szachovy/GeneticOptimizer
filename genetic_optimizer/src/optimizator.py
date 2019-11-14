@@ -41,13 +41,13 @@ class Optimizer(object):
             clusters_no = clusters_no.fit(self.fitted_population[['Chromosome', 'Total']])
             sum_of_squared_distances.append(clusters_no.inertia_)
         
-        return self.linear_group_size(sum_of_squared_distances)
-        
         # plt.plot(range(1, int(self.population.shape[0])), Sum_of_squared_distances, 'bx-')
         # plt.xlabel('cluster number')
         # plt.ylabel('Sum_of_squared_distances')
         # plt.title('Elbow method for optimal number of clusters')
         # plt.show()
+
+        return self.linear_group_size(sum_of_squared_distances)
 
     def linear_group_size(self, sum_of_squared_distances):
         """
@@ -83,12 +83,12 @@ class Optimizer(object):
 
         self.fitted_population = pd.concat([self.fitted_population, pd.Series(self.change_order(population_groups), name='Labels')], axis=1)
 
-#        plt.title('Fitted chromosomes groups')
-#        plt.xlabel('Number of chromosome')
-#        plt.ylabel('Total fitted value')
-#        plt.scatter(self.fitted_population['Chromosome'], self.fitted_population['Total'], c=population_groups.labels_)
-#        plt.scatter(population_groups.cluster_centers_[:,0], population_groups.cluster_centers_[:,1], marker='x')
-#        plt.show()
+        # plt.title('Fitted chromosomes groups')
+        # plt.xlabel('Number of chromosome')
+        # plt.ylabel('Total fitted value')
+        # plt.scatter(self.fitted_population['Chromosome'], self.fitted_population['Total'], c=population_groups.labels_)
+        # plt.scatter(population_groups.cluster_centers_[:,0], population_groups.cluster_centers_[:,1], marker='x')
+        # plt.show()
 
         
         if (save and data):

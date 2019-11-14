@@ -11,6 +11,11 @@ from .optimizator import Optimizer
 from .save import Save
 
 from datetime import datetime
+# This import registers the 3D projection, but is otherwise unused.
+from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 class Pipeline(object):
     """
@@ -27,7 +32,7 @@ class Pipeline(object):
     def __init__(self, data, iterations, shuffle_scale, variety, chromosome_weight):
         self.config = Main_Configuration(iterations, shuffle_scale, variety, chromosome_weight)
         self.performance = self.config.performance()
-        
+        self.tmp_data = {}
         start = datetime.now()
         
         #preprocessing
@@ -40,7 +45,8 @@ class Pipeline(object):
             #fitness
             self.fitted_population = Fitness(self.population).fit_population()
             print(str(datetime.now()) + "\n" + "Population {} fitted correctly".format(self.generation))
-#            print(self.fitted_population)
+            self.tmp_data[self.generation] = self.fitted_population['Total']
+
 
             #optimizer
             self.new_population = Optimizer(self.performance, self.fitted_population)
@@ -62,6 +68,25 @@ class Pipeline(object):
         save = Save(data, self.config, start, stop, self.generation, self.performance)
         save.save_population = self.population
         print(save.save_population)
-        
+        self.plot_the_surface()    
 
+    
+    def plot_the_surface(self):
+        fig = plt.figure()
+        ax = fig.gca(projection='3d')
+
+        # Make data.
+        for generation, series in self.tmp_data.items():
+            X = self.tmp_data[generation].keys()
+            Y = generation
+            Z = self.tmp_data[generation].get_values()
         
+            ax.scatter(X, Y, Z, cmap=plt.cm.get_cmap('RdBu'))
+
+        ax.set_xlabel('Chromosome number')
+        ax.set_ylabel('Generation')
+        ax.set_zlabel('Fitted Values') 
+
+
+        plt.show()
+

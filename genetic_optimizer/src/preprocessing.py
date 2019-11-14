@@ -41,7 +41,7 @@ class Preprocess_Dataframe(object):
             
             self.population.sort_index(inplace=True)
         
-        print(self.population)
+
         self.check_types()
         self.all_nan_exception()
 

@@ -1,6 +1,8 @@
 # Genetic Optimizer
 _Genetic algorithm optimizer using K-Means clustering with one way ANOVA algorithms_
 
+**Warning: This was a first-year student project and is out of support now.**
+
 [![Build Status](https://travis-ci.org/szachovy/GeneticOptimizer.svg?branch=master)](https://travis-ci.org/szachovy/GeneticOptimizer)
 [![PyPI version](https://badge.fury.io/py/genetic-optimizer.svg)](https://badge.fury.io/py/genetic-optimizer)
 
